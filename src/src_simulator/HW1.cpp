@@ -29,13 +29,14 @@
 #include "PARTICLE.h"
 #include "PARTICLE_SYSTEM.h"
 #include <vector>
+#include <memory>
 #include "HW1.h"
 
 
 // GUI interaction stuff
 GLVU glvu;
 
-PARTICLE_SYSTEM* particleSystem;
+std::unique_ptr<PARTICLE_SYSTEM> particleSystem;
 
 double dt = 1.0 / 100.0;
 bool animate = false;
@@ -308,7 +309,7 @@ int main(int argc, char** argv)
     glvuVec3f center(0.0, 0.0, 0.0);
     glvu.SetWorldCenter(center);
 
-    particleSystem = new PARTICLE_SYSTEM();
+    particleSystem = std::make_unique<PARTICLE_SYSTEM>();
 
     // Let GLUT take over
     glutMainLoop();
