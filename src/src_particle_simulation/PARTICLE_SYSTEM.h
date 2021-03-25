@@ -7,7 +7,10 @@
 //#include <map>
 #include "FIELD_3D.h"
 
-#include "HW1.h"
+
+#define SCENARIO_DAM      0
+#define SCENARIO_FAUCET   1
+#define SCENARIO_CUBE     2
 
 #define h 0.0457 //0.02 //0.045
 
