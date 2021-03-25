@@ -11,4 +11,5 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 ################################################################################
 #add subdirs
 add_subdirectory(src/src_glvu)
+add_subdirectory(src/src_particle_simulation)
 add_subdirectory(src/src_simulator)
