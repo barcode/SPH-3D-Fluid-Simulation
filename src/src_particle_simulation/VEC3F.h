@@ -1,5 +1,4 @@
-#ifndef VEC3F_H
-#define VEC3F_H
+#pragma once
 
 //////////////////////////////////////////////////////////////////////
 // This code is based on code from the (excellent) libgfx library by
@@ -84,5 +83,3 @@ inline std::ostream &operator<<(std::ostream &out, VEC3F& v)
 
 inline VEC3F operator*(const float a, const VEC3F& b)
 { return VEC3F(b.x * a, b.y * a, b.z * a); }
-
-#endif

@@ -1,6 +1,4 @@
-#ifndef PARTICLE_SYSTEM_H
-#define PARTICLE_SYSTEM_H
-
+#pragma once
 
 #include "PARTICLE.h"
 #include "WALL.h"
@@ -112,5 +110,3 @@ private:
   VEC3D boxSize;
 
 };
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef FIELD_2D_H
-#define FIELD_2D_H
+#pragma once
 
 #include <cstdlib>
 #include <iostream>
@@ -71,5 +70,3 @@ private:
 
   double* _data;
 };
-
-#endif

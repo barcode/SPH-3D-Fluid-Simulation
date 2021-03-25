@@ -18,9 +18,7 @@
 //============================================================================
 // vec3fv.hpp
 //============================================================================
-
-#ifndef _VEC3FV_H_
-#define _VEC3FV_H_
+#pragma once
 
 #include <stdio.h>
 #include <math.h>
@@ -96,5 +94,3 @@ inline void CrossProd3fv(float* C, const float* A, const float* B) // C = A X B
 { 
   Set3fv(C, A[1]*B[2]-A[2]*B[1], A[2]*B[0]-A[0]*B[2], A[0]*B[1]-A[1]*B[0]);
 }
-
-#endif

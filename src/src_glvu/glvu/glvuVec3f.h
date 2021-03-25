@@ -18,9 +18,7 @@
 //==========================================================================
 // glvuVec3.hpp : 3d vector class template. Works for any integer or real type.
 //==========================================================================
-
-#ifndef VEC3_H
-#define VEC3_H
+#pragma once
 
 #include <stdio.h>
 #include <math.h>
@@ -243,7 +241,3 @@ typedef glvuVec3<float> glvuVec3f;
 typedef glvuVec3<double> glvuVec3d;
 
 template<class Type> glvuVec3<Type> glvuVec3<Type>::ZERO = glvuVec3<Type>(0,0,0);
-
-#endif
-
-

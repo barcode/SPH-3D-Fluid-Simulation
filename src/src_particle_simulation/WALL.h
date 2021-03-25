@@ -1,5 +1,4 @@
-#ifndef WALL_H
-#define WALL_H
+#pragma once
 
 #ifdef __APPLE__
 #include <GLUT/glut.h>
@@ -29,5 +28,3 @@ private:
   VEC3D _normal;
   VEC3D _point;
 };
-
-#endif

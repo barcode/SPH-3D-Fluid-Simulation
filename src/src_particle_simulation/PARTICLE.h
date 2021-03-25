@@ -1,5 +1,4 @@
-#ifndef PARTICLE_H
-#define PARTICLE_H
+#pragma once
 
 #ifdef __APPLE__
 #include <GLUT/glut.h>
@@ -71,6 +70,3 @@ private:
   GLUquadricObj* myQuadric;
     
 };
-
-
-#endif

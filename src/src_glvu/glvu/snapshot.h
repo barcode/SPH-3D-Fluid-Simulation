@@ -19,9 +19,7 @@
 // snapshot.hpp : TAKES A "SNAPSHOT" OF THE WINDOW (WRITES THE FRAMEBUFFER
 // TO A .PPM FILE)
 //============================================================================
-
-#ifndef _GLVU_SNAPSHOT_H_ 
-#define _GLVU_SNAPSHOT_H_ 
+#pragma once
 
 /**
  * Writes a snapshot of the current screen in ppm format. 
@@ -69,6 +67,3 @@ inline void SnapShot(void)
   glPixelStorei(GL_PACK_ALIGNMENT,OldPackAlignment);
   glReadBuffer((GLenum)OldReadBuffer);
 }
-
-
-#endif

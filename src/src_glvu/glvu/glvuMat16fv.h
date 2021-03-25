@@ -20,9 +20,7 @@
 //----------------------------------------------------------------------------
 // $Id: mat16fv.hpp,v 1.5 2002/03/13 08:21:44 harrism Exp $
 //============================================================================
-
-#ifndef _MAT16FV_H_
-#define _MAT16FV_H_
+#pragma once
 
 #include <stdio.h>
 #include <math.h>
@@ -455,5 +453,3 @@ inline float* World2ScreenXform16fv(
   Mult16fv(M,M,N);  // M=M*N;
   return(M);
 }
-
-#endif

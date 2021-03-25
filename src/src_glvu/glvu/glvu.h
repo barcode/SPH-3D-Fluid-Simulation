@@ -19,8 +19,7 @@
 // glvu.hpp : OpenGL/GLUT -based viewer
 //============================================================================
 
-#ifndef _GLVU_
-#define _GLVU_
+#pragma once
 
 #include <stdlib.h>
 #include <time.h>            // FOR TIMED PATH PLAYBACK (glvu_camview)
@@ -842,12 +841,3 @@ inline GLVU* GLVU::GetGLVU(void)
 {
   return GLVUs[ glutGetWindow() ];
 }
-
-
-#endif
-
-
-
-
-
-

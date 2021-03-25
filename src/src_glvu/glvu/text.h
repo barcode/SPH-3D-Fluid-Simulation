@@ -19,8 +19,7 @@
 // text.hpp : bitmap text drawing routine; works like "printf"
 //============================================================================
 
-#ifndef _GLVU_TEXT_H_
-#define _GLVU_TEXT_H_
+#pragma once
 
 #include <GL/glut.h>
 #include <stdio.h>
@@ -162,5 +161,3 @@ inline void Text3D(float x, float y, float z, char *format, ...)
   glPopAttrib();
   glPopAttrib();
 }
-
-#endif

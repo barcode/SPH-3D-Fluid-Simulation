@@ -1,5 +1,4 @@
-#ifndef FIELD_3D_H
-#define FIELD_3D_H
+#pragma once
 
 #include <cstdlib>
 #include <iostream>
@@ -50,5 +49,3 @@ private:
   particleVector* _data;
   
 };
-
-#endif
