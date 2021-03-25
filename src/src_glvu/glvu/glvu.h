@@ -1,18 +1,18 @@
 //------------------------------------------------------------------------------
 // File : glvu.hpp
 //------------------------------------------------------------------------------
-// GLVU : Copyright 1997 - 2002 
+// GLVU : Copyright 1997 - 2002
 //        The University of North Carolina at Chapel Hill
 //------------------------------------------------------------------------------
-// Permission to use, copy, modify, distribute and sell this software and its 
-// documentation for any purpose is hereby granted without fee, provided that 
-// the above copyright notice appear in all copies and that both that copyright 
-// notice and this permission notice appear in supporting documentation. 
-// Binaries may be compiled with this software without any royalties or 
-// restrictions. 
+// Permission to use, copy, modify, distribute and sell this software and its
+// documentation for any purpose is hereby granted without fee, provided that
+// the above copyright notice appear in all copies and that both that copyright
+// notice and this permission notice appear in supporting documentation.
+// Binaries may be compiled with this software without any royalties or
+// restrictions.
 //
-// The University of North Carolina at Chapel Hill makes no representations 
-// about the suitability of this software for any purpose. It is provided 
+// The University of North Carolina at Chapel Hill makes no representations
+// about the suitability of this software for any purpose. It is provided
 // "as is" without express or implied warranty.
 
 //============================================================================
@@ -61,7 +61,7 @@
  * developing the mouse-based camera manipulation routines can be
  * quite time consuming, as how to construct a mapping from 2D to 3D
  * (6D, really) that is intuitive for the user is far from obvious.
- * 
+ *
  * Another nice feature supported by GLVU is "inertia", or the ability
  * to start a model spinning and have it keep spinning even after the
  * user releases the mouse.  GLVU can also support multiple windows
@@ -83,41 +83,42 @@
  * approach as well, by allowing you to subclass GLVU and override
  * handler methods.
  *
- * @see QGLVU, Camera 
+ * @see QGLVU, Camera
  */
 class GLVU
 {
-  public:
+public:
 
     /// The world navigation modes.  See SetWorldNavMode()
     /** These are the different modes for manipulating the current
      *  camera with mouse input.
      */
-    enum WorldNavMode{
-      NAV_MODE_TRACKBALL, 
-      NAV_MODE_HYPERBALL,
-      NAV_MODE_DRIVE, 
-      NAV_MODE_TRANSLATE, 
-      NAV_MODE_LOOK
+    enum WorldNavMode
+    {
+        NAV_MODE_TRACKBALL,
+        NAV_MODE_HYPERBALL,
+        NAV_MODE_DRIVE,
+        NAV_MODE_TRANSLATE,
+        NAV_MODE_LOOK
     };
 
-    /// Camera IDs.  There are 4 predefined cameras in 
+    /// Camera IDs.  There are 4 predefined cameras in
     /// a GLVU that can be switched between.
     enum CameraID
     {
-      CAMERA_1,
-      CAMERA_2,
-      CAMERA_3,
-      CAMERA_4,
-      CAMERA_NUM_CAMS
+        CAMERA_1,
+        CAMERA_2,
+        CAMERA_3,
+        CAMERA_4,
+        CAMERA_NUM_CAMS
     };
-  
+
     /// A function type used by the 'inertia' handling system
     typedef void (*InertiaFunc)(int x, int y);
 
     GLVU();
     virtual ~GLVU();
-    int Init(char *WindowTitle, 
+    int Init(char* WindowTitle,
              unsigned int VisualMode,
              int WindowStartX, int WindowStartY,
              int WindowWidth, int WindowHeight);
@@ -128,31 +129,31 @@ class GLVU
     // CAMVIEW
     int GetPlaybackOn() const;
     int GetRecordingOn() const;
-     
+
     // CAMVIEW
-    void SetAllCams(const glvuVec3f& WorldMin, const glvuVec3f& WorldMax, 
-                    const glvuVec3f& Eye, const glvuVec3f& LookAtCntr, 
+    void SetAllCams(const glvuVec3f& WorldMin, const glvuVec3f& WorldMax,
+                    const glvuVec3f& Eye, const glvuVec3f& LookAtCntr,
                     const glvuVec3f& viewup,
-                    float Yfov, float Aspect, 
+                    float Yfov, float Aspect,
                     float NearFactor, float FarFactor);
-    void AllCamsPerspectiveChange(float Yfov, float Aspect, 
-                                 float Ndist, float Fdist);
+    void AllCamsPerspectiveChange(float Yfov, float Aspect,
+                                  float Ndist, float Fdist);
     void AllCamsPerspectiveAspectChange(float Aspect);
     void AllCamsPerspectiveNearFarChange(float Ndist, float Fdist);
     void AllCamsResetToOrig();
     float* GetModelviewMatrix(float* M);
     float* GetProjectionMatrix(float* M);
-    void GetPixelRay(int sx, int sy, int ww, int wh, glvuVec3f *Start, glvuVec3f *Dir)
-      const;
+    void GetPixelRay(int sx, int sy, int ww, int wh, glvuVec3f* Start, glvuVec3f* Dir)
+    const;
     void SelectCam(int WhichCam);
     int GetCurrentCamId() const;
     Camera* GetCurrentCam();
-    void SetCurrentCam(Camera *NewCam);
+    void SetCurrentCam(Camera* NewCam);
     Camera* GetCam(int WhichCam);
     int GetInOutMode() const;
     void SetInOutMode(int Bool);
     void ToggleInOutMode();
-    void SetOrigCam(Camera *Cam);
+    void SetOrigCam(Camera* Cam);
     const glvuVec3f& GetViewUp() const ;
     const glvuVec3f& GetWorldCenter() const ;
     void SetWorldCenter(const glvuVec3f& newCenter);
@@ -168,11 +169,11 @@ class GLVU
     void LookY(int OldY, int NewY, int WH);
     void TrackBallX(int OldX, int NewX, int WW);
     void TrackBallY(int OldY, int NewY, int WH);
-    void HyperBall(int OldX, int OldY, int NewX, int NewY,int WW, int WH);
-    void StartRecording(const char *FileName = "path0.dat");
+    void HyperBall(int OldX, int OldY, int NewX, int NewY, int WW, int WH);
+    void StartRecording(const char* FileName = "path0.dat");
     void EndRecording();
     FILE* GetPathFile() const;
-    void StartPlayback(const char *FileName = "path0.dat");
+    void StartPlayback(const char* FileName = "path0.dat");
     void EndPlayback();
     void StopRecordingPlayback();
     void StartFPSClock() ;
@@ -196,13 +197,13 @@ class GLVU
     bool GetCtrlDown() const;
     int GetMouseDeltaX(int curx) const;
     int GetMouseDeltaY(int cury) const;
-    int GetInertiaOn() const ; 
+    int GetInertiaOn() const ;
     int GetInertiaEnabled() const ;
     void SetInertiaOn(int Bool);
     void SetInertiaEnabled(int Bool) ;
-    int GetInertiaDelay() const ; 
+    int GetInertiaDelay() const ;
     void SetInertiaDelay(int msec) ;
-    void SetInertiaFunc(InertiaFunc f) ; 
+    void SetInertiaFunc(InertiaFunc f) ;
     InertiaFunc GetInertiaFunc() const;
 
     // DEFAULT CALLBACK FUNCTIONS (MOSTLY JUST CALL THE CALLBACK METHODS)
@@ -212,7 +213,7 @@ class GLVU
     static void DefaultDisplayFunc();
     static void DefaultKeyboardFunc(unsigned char Key, int x, int y);
     static void DefaultInertiaFunc(int x, int y);
-  
+
     // CALLBACK METHODS
     virtual void Mouse(int button, int state, int x, int y);
     virtual void Motion(int x, int y);
@@ -228,17 +229,17 @@ class GLVU
     static GLVU* GetGLVU(int WindowID);
     static GLVU* GetGLVU(); // deprecated
     static void PrintVisualInfo();
-    static void CheckForGLError( char *msg );
+    static void CheckForGLError(char* msg);
 
 
-  protected:
+protected:
 
     // GL VIEWER STATE VARIABLES
-    Camera *Cams;                // ARRAY OF 4 VIEWER CAMS
-    Camera *Cam;                 // PTR TO CURRENT CAM (DEFAULT IS CAM 0)
+    Camera* Cams;                // ARRAY OF 4 VIEWER CAMS
+    Camera* Cam;                 // PTR TO CURRENT CAM (DEFAULT IS CAM 0)
     Camera OrigCam;              // THE ORIGINAL VIEW FOR RESETTING
     int RecordingOn, PlaybackOn; // CAMERA RECORDING/PLAYBACK FLAGS
-    FILE *RecordPlaybackFP;      // RECORDING/PLAYBACK FILE POINTER
+    FILE* RecordPlaybackFP;      // RECORDING/PLAYBACK FILE POINTER
     glvuVec3f WorldCenter;           // WORLD BOUNDING-SPHERE CENTER
     float WorldRadius;           // WORLD BOUNDING-SPHERE RADIUS
     glvuVec3f ViewUp;                // THE WORLD UP-VECTOR
@@ -260,7 +261,7 @@ class GLVU
 
     int MainMenuID;              // GLUT MAIN MENU ID
     int WorldNavMode;            // WORLD NAVIGATION MODE
-    int *CamDisplayOn;           // DISPLAY FLAG FOR EACH CAMERA
+    int* CamDisplayOn;           // DISPLAY FLAG FOR EACH CAMERA
 
     // MENU
     static void MainMenuHandler(int value);
@@ -275,11 +276,11 @@ class GLVU
     int DoInertia();
     InertiaFunc UserInertiaFunc;
 
-    static GLVU *GLVUs[MAX_GLVUS];
+    static GLVU* GLVUs[MAX_GLVUS];
 
     // glut WindowID
     int WindowID;
-   
+
     static void InertialTimerFunc(int value);
     static void PathPlaybackTimerFunc(int value);
 
@@ -292,15 +293,15 @@ class GLVU
 /// Return whether or not playback mode is currently active
 /**
  * When playback mode is active, the modelview matrices for viewing
- * are read from a previously recorded file instead of coming from the 
+ * are read from a previously recorded file instead of coming from the
  * user's mousing.
  *
- * @see GetRecordingOn, StartRecording, EndRecording, 
+ * @see GetRecordingOn, StartRecording, EndRecording,
  *     StartPlayback, EndPlayback, GetModelviewMatrix
  */
 inline int GLVU::GetPlaybackOn() const
 {
-  return(PlaybackOn); 
+    return (PlaybackOn);
 }
 
 /// Return whether or not playback mode is currently active
@@ -309,12 +310,12 @@ inline int GLVU::GetPlaybackOn() const
  * (through mouse manipulation) is written to a file.  The resulting
  * path can be played back later using StartPlayback().
  *
- * @see GetPlaybackOn, StartRecording, EndRecording, 
+ * @see GetPlaybackOn, StartRecording, EndRecording,
  *     StartPlayback, EndPlayback, GetModelviewMatrix
  */
 inline int GLVU::GetRecordingOn() const
 {
-  return(RecordingOn); 
+    return (RecordingOn);
 }
 
 /// Return the file pointer being used for playback or recording
@@ -322,41 +323,41 @@ inline int GLVU::GetRecordingOn() const
  * Return the file pointer being used for playback or recording.
  * This is 0 if neither path playback nor recording is currently active.
  *
- * @see GetPlaybackOn, StartRecording, EndRecording, 
+ * @see GetPlaybackOn, StartRecording, EndRecording,
  *     StartPlayback, EndPlayback, GetModelviewMatrix
  */
 inline FILE* GLVU::GetPathFile() const
 {
-  return RecordPlaybackFP;
+    return RecordPlaybackFP;
 }
 
 
 /// Switch to the specified camera
-/** 
+/**
  * Changes the camera from which the \c GLVU renders the scene.
  *
  * By default this method is bound to the 1,2,3, and 4 keys on the
  * keyboard.
  *
  * @param WhichCam can be one of the #CameraID enum values.
- * @see GetModelviewMatrix, BeginFrame, EndFrame 
+ * @see GetModelviewMatrix, BeginFrame, EndFrame
 */
 inline void GLVU::SelectCam(int WhichCam)
 {
-  Cam = &Cams[WhichCam]; 
+    Cam = &Cams[WhichCam];
 }
 
 /// Return the index of the active camera.
 inline int GLVU::GetCurrentCamId() const
 {
-  return (Cam - &Cams[0]);
+    return (Cam - &Cams[0]);
 }
 
 
 /// Return a pointer to the active camera.
-inline Camera* GLVU::GetCurrentCam() 
+inline Camera* GLVU::GetCurrentCam()
 {
-  return(Cam); 
+    return (Cam);
 }
 
 /// Set the active camera.
@@ -368,51 +369,57 @@ inline Camera* GLVU::GetCurrentCam()
  *
  *  @see SelectCam
  */
-inline void GLVU::SetCurrentCam(Camera *NewCam) 
+inline void GLVU::SetCurrentCam(Camera* NewCam)
 {
-  Cam=NewCam; 
+    Cam = NewCam;
 }
 
 /// Return a pointer to the specified camera
 /**
  * @param WhichCam can be one of the \c CameraID identifiers \c
  * CAMERA_1, \c CAMERA_2, \c CAMERA_3, or \c CAMERA_4, or just a
- * number between zero and 3.  
+ * number between zero and 3.
  */
-inline Camera* GLVU::GetCam(int WhichCam) 
+inline Camera* GLVU::GetCam(int WhichCam)
 {
-  return(&Cams[WhichCam]);
+    return (&Cams[WhichCam]);
 }
 
 /**
- * Returns a boolean specifying whether the navigation mode is "inside looking 
- * out" (true) or "outside looking in" (false, the default).  
+ * Returns a boolean specifying whether the navigation mode is "inside looking
+ * out" (true) or "outside looking in" (false, the default).
  * @see SetInOutMode, ToggleInOutMode
- */   
-inline int GLVU::GetInOutMode() const 
+ */
+inline int GLVU::GetInOutMode() const
 {
-  return(InsideLookingOutMode); 
+    return (InsideLookingOutMode);
 }
 
 /**
  * Sets the navigation mode to either "inside looking out" (true) or
- * "outside looking in" (false, the default).  
+ * "outside looking in" (false, the default).
  * @see SetInOutMode, ToggleInOutMode.
  */
-inline void GLVU::SetInOutMode(int Bool) 
+inline void GLVU::SetInOutMode(int Bool)
 {
-  InsideLookingOutMode=Bool; 
+    InsideLookingOutMode = Bool;
 }
 
 /**
- * Toggles the display mode between "inside looking out" 
+ * Toggles the display mode between "inside looking out"
  * and "outside looking in".
  * @see SetInOutMode, GetInOutMode
  */
-inline void GLVU::ToggleInOutMode() 
+inline void GLVU::ToggleInOutMode()
 {
-  if (InsideLookingOutMode) InsideLookingOutMode=0;
-  else InsideLookingOutMode=1; 
+    if (InsideLookingOutMode)
+    {
+        InsideLookingOutMode = 0;
+    }
+    else
+    {
+        InsideLookingOutMode = 1;
+    }
 }
 
 /**
@@ -420,28 +427,28 @@ inline void GLVU::ToggleInOutMode()
  * at a later time using AllCamsResetToOrig().  Called from SetAllCams().
  * @see AllCamsResetToOrig, SetAllCams
  */
-inline void GLVU::SetOrigCam(Camera *Cam) 
+inline void GLVU::SetOrigCam(Camera* Cam)
 {
-  OrigCam.Copy(*Cam); 
+    OrigCam.Copy(*Cam);
 }
 
-/** 
+/**
  * Returns the global "up" vector, as set by SetViewUp() or SetAllCams().
  * This has some effect on the operation of certain mouse navigation modes.
  * @see SetWorldNavMode
  */
-inline const glvuVec3f& GLVU::GetViewUp() const 
+inline const glvuVec3f& GLVU::GetViewUp() const
 {
-  return(ViewUp); 
+    return (ViewUp);
 }
 
 /**
  * Returns the global "center" of the world, as set by SetWorldCenter() or
  * (indirectly) by SetAllCams().
  */
-inline const glvuVec3f& GLVU::GetWorldCenter() const 
+inline const glvuVec3f& GLVU::GetWorldCenter() const
 {
-  return WorldCenter; 
+    return WorldCenter;
 }
 
 /**
@@ -450,34 +457,34 @@ inline const glvuVec3f& GLVU::GetWorldCenter() const
  */
 inline void GLVU::SetWorldCenter(const glvuVec3f& center)
 {
-  WorldCenter = center;
+    WorldCenter = center;
 }
 
 /**
  * Returns the global "radius" of the world, as set by SetWorldRadius() or
  * (indirectly) by SetAllCams().
  */
-inline float GLVU::GetWorldRadius() const 
+inline float GLVU::GetWorldRadius() const
 {
-  return WorldRadius; 
+    return WorldRadius;
 }
 
 /**
  * Sets the global "radius" of the world.
  * @see GetWorldRadius
  */
-inline void GLVU::SetWorldRadius(float newRadius) 
+inline void GLVU::SetWorldRadius(float newRadius)
 {
-  WorldRadius = newRadius; 
+    WorldRadius = newRadius;
 }
 
 /**
  * Sets the global "up" vector.
  * @see GetViewUp
  */
-inline void GLVU::SetViewUp(glvuVec3f viewup) 
+inline void GLVU::SetViewUp(glvuVec3f viewup)
 {
-  ViewUp=viewup; 
+    ViewUp = viewup;
 }
 
 /**
@@ -485,9 +492,9 @@ inline void GLVU::SetViewUp(glvuVec3f viewup)
  * into world units.
  * @see GetMoveSpeed, SetWorldNavMode
  */
-inline void GLVU::SetMoveSpeed(float speed) 
+inline void GLVU::SetMoveSpeed(float speed)
 {
-  moveSpeed = speed; 
+    moveSpeed = speed;
 }
 
 /**
@@ -497,7 +504,7 @@ inline void GLVU::SetMoveSpeed(float speed)
  */
 inline float GLVU::GetMoveSpeed() const
 {
-  return moveSpeed; 
+    return moveSpeed;
 }
 
 
@@ -505,39 +512,41 @@ inline float GLVU::GetMoveSpeed() const
  * Starts the frame timer and resets the frame counter.  You must call
  * this once after creating the GLVU if you would like to take
  * advantage of the built-in frame timing capabilities.
- * @see StopFPSClock, UpdateFPS, BeginFrame 
+ * @see StopFPSClock, UpdateFPS, BeginFrame
  */
-inline void GLVU::StartFPSClock() 
+inline void GLVU::StartFPSClock()
 {
-  calcFPS = 1; ftime(&lastFPSClock); lastFPSCount=0;
+    calcFPS = 1;
+    ftime(&lastFPSClock);
+    lastFPSCount = 0;
 }
 
 /**
  *   Stops the frame rate timer.
  * @see StartFPSClock
  */
-inline void GLVU::StopFPSClock() 
+inline void GLVU::StopFPSClock()
 {
-  calcFPS = 0; 
+    calcFPS = 0;
 }
 
 /**
  * Returns the last calculated Frames Per Second measurement.
  * @see StartFPSClock, StopFPSClock, UpdateFPS
  */
-inline float GLVU::GetFPS() const 
+inline float GLVU::GetFPS() const
 {
-  return lastFPS; 
+    return lastFPS;
 }
 
 /**
- * Returns the GLUT ID for the right-click menu automatically installed by GLVU. 
+ * Returns the GLUT ID for the right-click menu automatically installed by GLVU.
  * This can be used with GLUT calls to modify the contents of the menu.
  * @see InitMenu
  */
-inline int GLVU::GetMainMenuID() const 
+inline int GLVU::GetMainMenuID() const
 {
-  return(MainMenuID); 
+    return (MainMenuID);
 }
 
 /**
@@ -545,9 +554,9 @@ inline int GLVU::GetMainMenuID() const
  * Return value is one of the #WorldNavMode enum constants.
  * @see SetWorldNavMode
  */
-inline int GLVU::GetWorldNavMode() const 
+inline int GLVU::GetWorldNavMode() const
 {
-  return(WorldNavMode); 
+    return (WorldNavMode);
 }
 
 /**
@@ -575,7 +584,7 @@ inline int GLVU::GetWorldNavMode() const
  *
  * The outside-looking-in rotational modes (\c NAV_MODE_TRACKBALL,
  * \c NAV_MODE_HYPERBALL) use the "world center" as the center of rotation.
- * See SetWorldCenter() and SetAllCams() for more information about the 
+ * See SetWorldCenter() and SetAllCams() for more information about the
  * world center and camera settings.
  *
  * GLVU uses the following default keyboard accelerators to switch between modes:
@@ -587,21 +596,21 @@ inline int GLVU::GetWorldNavMode() const
  * - 'h' : \c NAV_MODE_TRACKBALL
  *
  * @see GetWorldNavMode */
-inline void GLVU::SetWorldNavMode(int mode) 
+inline void GLVU::SetWorldNavMode(int mode)
 {
-  WorldNavMode=mode; 
+    WorldNavMode = mode;
 }
 
 /**
  *  Returns the display status of the specified Camera.
- *  Camera display refers to rendering of some lines that show the extents of a 
+ *  Camera display refers to rendering of some lines that show the extents of a
  *  camera's frustum.   GLVU has some functionality to do this automically.
  *
  *  @see EndFrame
 */
-inline int GLVU::GetCamDisplayOn(int WhichCam) const 
+inline int GLVU::GetCamDisplayOn(int WhichCam) const
 {
-  return(CamDisplayOn[WhichCam]); 
+    return (CamDisplayOn[WhichCam]);
 }
 /**
  *  Returns true (nonzero) if the current world nav mode set is valid
@@ -609,36 +618,36 @@ inline int GLVU::GetCamDisplayOn(int WhichCam) const
  *
  *  @see SetWorldNavMode
 */
-inline int GLVU::IsWorldNavMode() const 
+inline int GLVU::IsWorldNavMode() const
 {
-  return(WorldNavMode>=0 && WorldNavMode<=3); 
+    return (WorldNavMode >= 0 && WorldNavMode <= 3);
 }
 
 /**
  * Returns true if the left button was down
  * last time the Mouse() or Motion() callback got called.
  */
-inline bool GLVU::GetLeftButtonDown() const 
+inline bool GLVU::GetLeftButtonDown() const
 {
-  return(LeftButtonDown); 
+    return (LeftButtonDown);
 }
 
 /**
  * Returns true if the middle button was down
  * last time the Mouse() or Motion() callback got called.
  */
-inline bool GLVU::GetMiddleButtonDown() const 
+inline bool GLVU::GetMiddleButtonDown() const
 {
-  return(MiddleButtonDown); 
+    return (MiddleButtonDown);
 }
 
 /**
  * Returns true if the right button was down
  * last time the Mouse() or Motion() callback got called.
  */
-inline bool GLVU::GetRightButtonDown() const 
+inline bool GLVU::GetRightButtonDown() const
 {
-  return(RightButtonDown); 
+    return (RightButtonDown);
 }
 
 /**
@@ -647,7 +656,7 @@ inline bool GLVU::GetRightButtonDown() const
  */
 inline bool GLVU::GetAltDown() const
 {
-  return (AltPressed);
+    return (AltPressed);
 }
 /**
  * Returns true if the Shift key was down
@@ -655,7 +664,7 @@ inline bool GLVU::GetAltDown() const
  */
 inline bool GLVU::GetShiftDown() const
 {
-  return (ShiftPressed);
+    return (ShiftPressed);
 }
 /**
  * Returns true if the Control key was down
@@ -663,7 +672,7 @@ inline bool GLVU::GetShiftDown() const
  */
 inline bool GLVU::GetCtrlDown() const
 {
-  return (CtrlPressed);
+    return (CtrlPressed);
 }
 
 /**
@@ -672,9 +681,9 @@ inline bool GLVU::GetCtrlDown() const
  */
 inline int GLVU::GetMouseDeltaX(int curx) const
 {
-  int dx = curx - OldX;
-  OldX = curx;
-  return dx;
+    int dx = curx - OldX;
+    OldX = curx;
+    return dx;
 }
 
 /**
@@ -684,38 +693,38 @@ inline int GLVU::GetMouseDeltaX(int curx) const
  */
 inline int GLVU::GetMouseDeltaY(int cury) const
 {
-  int dy = OldY - cury;
-  OldY = cury;
-  return dy;
+    int dy = OldY - cury;
+    OldY = cury;
+    return dy;
 }
 
 /**
  * Returns true (nonzero) if inertia is currently active.
- * Note that this is different from whether or not it is \em enabled. 
+ * Note that this is different from whether or not it is \em enabled.
  * @see SetInertiaEnabled
  */
-inline int GLVU::GetInertiaOn() const 
+inline int GLVU::GetInertiaOn() const
 {
-  return(InertiaOn); 
-} 
+    return (InertiaOn);
+}
 
 /// Return whether inertia is enabled
 /**
  * Returns TRUE (1) if inertia is enabled, FALSE (0) otherwise.
- * @see SetInertiaEnabled 
+ * @see SetInertiaEnabled
  */
-inline int GLVU::GetInertiaEnabled() const 
+inline int GLVU::GetInertiaEnabled() const
 {
-  return(InertiaEnabled);
+    return (InertiaEnabled);
 }
 
 /// Enable or disable the GLVU's inertia feature
 /**
  * @see GetInertiaEnabled
  */
-inline void GLVU::SetInertiaEnabled(int Bool) 
+inline void GLVU::SetInertiaEnabled(int Bool)
 {
-  InertiaEnabled=Bool;
+    InertiaEnabled = Bool;
 }
 
 
@@ -725,12 +734,12 @@ inline void GLVU::SetInertiaEnabled(int Bool)
  * enabled.  But when triggered, inertia callbacks are made repeatedly
  * at regular intervals to animate the camera.
  *
- * @see SetInertiaDelay, GetInertiaOn, GetInertiaEnabled 
+ * @see SetInertiaDelay, GetInertiaOn, GetInertiaEnabled
  */
-inline int GLVU::GetInertiaDelay() const 
+inline int GLVU::GetInertiaDelay() const
 {
-  return(InertiaDelay);
-} 
+    return (InertiaDelay);
+}
 
 /// Set the number of milliseconds to wait between inertia callbacks
 /**
@@ -740,11 +749,11 @@ inline int GLVU::GetInertiaDelay() const
  *
  * The implementation relies on \c glutTimerFunc().
  *
- * @see GetInertiaDelay, GetInertiaOn, GetInertiaEnabled 
+ * @see GetInertiaDelay, GetInertiaOn, GetInertiaEnabled
  */
-inline void GLVU::SetInertiaDelay(int msec) 
+inline void GLVU::SetInertiaDelay(int msec)
 {
-  InertiaDelay=msec;
+    InertiaDelay = msec;
 }
 
 /// Set the function to use as an inertia callback
@@ -752,10 +761,10 @@ inline void GLVU::SetInertiaDelay(int msec)
  * The default implemntation works fine.  There's really no
  * reason to call this.
  */
-inline void GLVU::SetInertiaFunc(GLVU::InertiaFunc f) 
+inline void GLVU::SetInertiaFunc(GLVU::InertiaFunc f)
 {
-  UserInertiaFunc=f;
-} 
+    UserInertiaFunc = f;
+}
 
 /// Return the function being uses as the inertia callback
 /**
@@ -763,7 +772,7 @@ inline void GLVU::SetInertiaFunc(GLVU::InertiaFunc f)
  */
 inline GLVU::InertiaFunc GLVU::GetInertiaFunc() const
 {
-  return UserInertiaFunc;
+    return UserInertiaFunc;
 }
 
 /// Return the GLUT window ID associated with this GLVU
@@ -773,16 +782,16 @@ inline GLVU::InertiaFunc GLVU::GetInertiaFunc() const
  * to do is make this the active GLUT window (i.e. call \c
  * glutSetWindow() on it) then you can call MakeCurrent() instead.
  *
- * @see MakeCurrent, GetGLVU(int), GetGLVU 
+ * @see MakeCurrent, GetGLVU(int), GetGLVU
  */
 inline int GLVU::GetWindowID() const
 {
-  return WindowID;
+    return WindowID;
 }
 
 /// Make \c this the currently active GL context
 /**
- * Equivalent to \c glutSetWindow(GetWindowID()).  
+ * Equivalent to \c glutSetWindow(GetWindowID()).
  *
  * @note This bites most people at some point or other in their \c
  * glutIdleFunc.  Many new GLUT users aren't aware that the
@@ -797,23 +806,23 @@ inline int GLVU::GetWindowID() const
  * per-window, and GLUT guarantees that that window will be current
  * when your callback is called.
  *
- *  @see GetGLVU(void) 
+ *  @see GetGLVU(void)
  */
 inline void GLVU::MakeCurrent()
 {
-  glutSetWindow(WindowID);
+    glutSetWindow(WindowID);
 }
 
 /// Returns the currently active GLVU window
 /**
- * See MakeCurrent() for a discussion of what it means to be the active 
+ * See MakeCurrent() for a discussion of what it means to be the active
  * window, and why you should care.
  *
  * @see MakeCurrent, GetGLVU(int)
  */
 inline GLVU* GLVU::GetCurrent()
 {
-  return GLVUs[ glutGetWindow() ];
+    return GLVUs[ glutGetWindow() ];
 }
 
 /// Returns a pointer to the GLVU that corresponds to the specified GLUT window ID.
@@ -826,7 +835,7 @@ inline GLVU* GLVU::GetCurrent()
  */
 inline GLVU* GLVU::GetGLVU(int WindowID)
 {
-  return GLVUs[ WindowID ];
+    return GLVUs[ WindowID ];
 }
 
 /// Returns the currently active GLVU window
@@ -839,5 +848,5 @@ inline GLVU* GLVU::GetGLVU(int WindowID)
  */
 inline GLVU* GLVU::GetGLVU(void)
 {
-  return GLVUs[ glutGetWindow() ];
+    return GLVUs[ glutGetWindow() ];
 }
