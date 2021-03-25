@@ -2,6 +2,8 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <vector>
+
 #include "assert.h"
 
 using namespace std;
@@ -13,7 +15,7 @@ public:
     // construction and destruction
     FIELD_2D();
     FIELD_2D(int xRes, int yRes);
-    virtual ~FIELD_2D();
+    virtual ~FIELD_2D() = default;
 
     // (x,y) accessor
     inline double& operator()(int x, int y)
@@ -56,7 +58,7 @@ public:
     {
         return _xRes * _yRes;
     };
-    double*& data()
+    std::vector<double>& data()
     {
         return _data;
     };
@@ -83,5 +85,5 @@ private:
     int _xRes;
     int _yRes;
 
-    double* _data;
+    std::vector<double> _data;
 };

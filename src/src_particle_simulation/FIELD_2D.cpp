@@ -4,23 +4,13 @@
 // Constructor / Destructor
 ///////////////////////////////////////////////////////////////////////
 FIELD_2D::FIELD_2D() :
-    _xRes(0), _yRes(0), _data(NULL)
-{
-}
+    FIELD_2D(0,0 )
+{}
 
 FIELD_2D::FIELD_2D(int xRes, int yRes) :
-    _xRes(xRes), _yRes(yRes)
+    _xRes(xRes), _yRes(yRes), _data(_xRes * _yRes)
 {
-    _data = new double[_xRes * _yRes];
     clear();
-}
-
-FIELD_2D::~FIELD_2D()
-{
-    if (_data)
-    {
-        delete[] _data;
-    }
 }
 
 void FIELD_2D::print()
@@ -37,13 +27,9 @@ void FIELD_2D::print()
 ///////////////////////////////////////////////////////////////////////
 void FIELD_2D::resize(int xRes, int yRes)
 {
-    if (_data)
-    {
-        delete[] _data;
-    }
     _xRes = xRes;
     _yRes = yRes;
-    _data = new double[_xRes * _yRes];
+    _data.resize(_xRes * _yRes);
     clear();
 }
 

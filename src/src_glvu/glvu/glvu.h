@@ -21,6 +21,7 @@
 
 #pragma once
 
+#include <array>
 #include <stdlib.h>
 #include <time.h>            // FOR TIMED PATH PLAYBACK (glvu_camview)
 #include <sys/timeb.h>       // FOR FRAME TIMING (glvu_camview)
@@ -117,7 +118,7 @@ public:
     typedef void (*InertiaFunc)(int x, int y);
 
     GLVU();
-    virtual ~GLVU();
+    virtual ~GLVU() = default;
     int Init(char* WindowTitle,
              unsigned int VisualMode,
              int WindowStartX, int WindowStartY,
@@ -234,8 +235,9 @@ public:
 
 protected:
 
+    static constexpr int NumCams = 4;
     // GL VIEWER STATE VARIABLES
-    Camera* Cams;                // ARRAY OF 4 VIEWER CAMS
+    std::array<Camera, NumCams> Cams;                // ARRAY OF 4 VIEWER CAMS
     Camera* Cam;                 // PTR TO CURRENT CAM (DEFAULT IS CAM 0)
     Camera OrigCam;              // THE ORIGINAL VIEW FOR RESETTING
     int RecordingOn, PlaybackOn; // CAMERA RECORDING/PLAYBACK FLAGS
@@ -245,7 +247,6 @@ protected:
     glvuVec3f ViewUp;                // THE WORLD UP-VECTOR
     int InsideLookingOutMode;    // NAVIGATION MODE (IN->OUT OR OUT->IN)
     clock_t PlaybackTime;        // FOR PATH PLAYBACK TIMING
-    int NumCams;
     struct timeb lastFPSClock;
     int calcFPS;
     float lastFPS;
@@ -261,7 +262,7 @@ protected:
 
     int MainMenuID;              // GLUT MAIN MENU ID
     int WorldNavMode;            // WORLD NAVIGATION MODE
-    int* CamDisplayOn;           // DISPLAY FLAG FOR EACH CAMERA
+    std::array<int, NumCams> CamDisplayOn;           // DISPLAY FLAG FOR EACH CAMERA
 
     // MENU
     static void MainMenuHandler(int value);

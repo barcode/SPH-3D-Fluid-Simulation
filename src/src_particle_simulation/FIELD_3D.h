@@ -2,6 +2,8 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <vector>
+
 #include "assert.h"
 #include "PARTICLE.h"
 
@@ -16,7 +18,7 @@ public:
 
     FIELD_3D();
     FIELD_3D(int xRes, int yRes, int zRes);
-    virtual ~FIELD_3D();
+    virtual ~FIELD_3D() = default;
 
     inline particleVector& operator()(int x, int y, int z)
     {
@@ -51,7 +53,7 @@ public:
     {
         return _cellCount;
     };
-    particleVector* data() const
+    std::vector<particleVector>& data()
     {
         return _data;
     };
@@ -63,6 +65,5 @@ private:
     int _zRes;
     int _cellCount;
 
-    particleVector* _data;
-
+    std::vector<particleVector> _data;
 };

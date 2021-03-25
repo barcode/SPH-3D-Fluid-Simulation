@@ -49,9 +49,6 @@ GLVU::GLVU()
 
     WorldNavMode = 0;
     InsideLookingOutMode = 0;
-    NumCams = 4;
-    Cams = new Camera[NumCams];
-    CamDisplayOn = new int[NumCams];
     for (int i = 0; i < NumCams; i++)
     {
         CamDisplayOn[i] = 0;
@@ -81,15 +78,6 @@ GLVU::GLVU()
     RecordPlaybackFP = 0;
 }
 
-/// The destructor
-/**
- * Virtual since GLVU has virtual methods and allocates some members on the heap.
- */
-GLVU::~GLVU()
-{
-    delete[] Cams;
-    delete[] CamDisplayOn;
-}
 
 /// Initialize a viewer
 /**

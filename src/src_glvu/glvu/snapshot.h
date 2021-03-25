@@ -21,6 +21,8 @@
 //============================================================================
 #pragma once
 
+#include <vector>
+
 /**
  * Writes a snapshot of the current screen in ppm format.
  * The file written is a file in the current working directory
@@ -64,19 +66,22 @@ inline void SnapShot(void)
     int WW = glutGet((GLenum)GLUT_WINDOW_WIDTH);
     int WH = glutGet((GLenum)GLUT_WINDOW_HEIGHT);
     int NumPixels = WW * WH;
-    GLubyte* Pixels = new GLubyte[NumPixels * 3];
-    if (Pixels == NULL)
+    std::vector<GLubyte> Pixels;
+    try
+    {
+        Pixels.resize(NumPixels * 3);
+    }
+    catch (...)
     {
         printf("UNABLE TO ALLOC PIXEL READ ARRAY!\n");
         return;
     }
-    glReadPixels(0, 0, WW, WH, GL_RGB, GL_UNSIGNED_BYTE, Pixels);
+    glReadPixels(0, 0, WW, WH, GL_RGB, GL_UNSIGNED_BYTE, Pixels.data());
 
     fp = fopen(FileName, "wb");
     fprintf(fp, "P6\n%d %d\n255\n", WW, WH);
-    fwrite(Pixels, 1, NumPixels * 3, fp);
+    fwrite(Pixels.data(), 1, NumPixels * 3, fp);
     fclose(fp);
-    delete[] Pixels;
 
     glPixelStorei(GL_PACK_ALIGNMENT, OldPackAlignment);
     glReadBuffer((GLenum)OldReadBuffer);

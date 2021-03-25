@@ -420,7 +420,7 @@ void PARTICLE_SYSTEM::stepVerlet(double dt)
     for (unsigned int gridCellIndex = 0; gridCellIndex < (*grid).cellCount(); gridCellIndex++)
     {
 
-        vector<PARTICLE>& particles = (*grid).data()[gridCellIndex];
+        vector<PARTICLE>& particles = (*grid).data().at(gridCellIndex);
 
         for (unsigned int p = 0; p < particles.size(); p++)
         {
