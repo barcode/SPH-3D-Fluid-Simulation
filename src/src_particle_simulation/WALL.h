@@ -1,20 +1,17 @@
 #pragma once
 
-#ifdef __APPLE__
-#include <GLUT/glut.h>
-#else
-#include <GL/glut.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
-#endif
-
 #include "PARTICLE.h"
 #include "VEC3.h"
 
 class WALL
 {
 public:
-    WALL(const VEC3D& normal, const VEC3D& point);
+    WALL(const VEC3D& normal, const VEC3D& point) :
+        _normal(normal), _point(point)
+    {
+        // just in case, normalize the normal vector
+        _normal.normalize();
+    }
 
     // accessors
     const VEC3D& normal() const
@@ -24,6 +21,15 @@ public:
     const VEC3D& point() const
     {
         return _point;
+    }
+
+    double penetration_depth(const PARTICLE& p, double part_r) const
+    {
+        return (point() - p.position()).dot(normal()) + part_r;
+    }
+    const VEC3D& penetration_normal(const PARTICLE&) const
+    {
+        return normal();
     }
 
 private:
