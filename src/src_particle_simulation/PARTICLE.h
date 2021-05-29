@@ -45,6 +45,10 @@ public:
     {
         return _position;
     }
+    const VEC3D& position() const
+    {
+        return _position;
+    }
     VEC3D& velocity()
     {
         return _velocity;
