@@ -552,22 +552,22 @@ void PARTICLE_SYSTEM::calculateAcceleration()
 
 void PARTICLE_SYSTEM::collisionForce(PARTICLE& particle, VEC3D& f_collision)
 {
-
-    for (unsigned int i = 0; i < _walls.size(); i++)
+    const auto collide=[&](const auto& obj)
     {
-
-        WALL& wall = _walls.at(i);
-
-        double d = (wall.point() - particle.position()).dot(wall.normal()) + 0.01; // particle radius
-
+        double d = obj.penetration_depth(particle, 0.01); // particle radius
         if (d > 0.0)
         {
+            const VEC3D normal = obj.penetration_normal(particle);
             // This is an alernate way of calculating collisions of particles against walls, but produces some jitter at boundaries
             //particle.position() += d * wall.normal();
             //particle.velocity() -= particle.velocity().dot(wall.normal()) * 1.9 * wall.normal();
-            particle.acceleration() += WALL_K * wall.normal() * d;
-            particle.acceleration() += WALL_DAMPING * particle.velocity().dot(wall.normal()) * wall.normal();
+            particle.acceleration() += WALL_K * normal * d;
+            particle.acceleration() += WALL_DAMPING * particle.velocity().dot(normal) * normal;
         }
+    };
+    for(const auto& w : _walls)
+    {
+        collide(w);
     }
 }
 
