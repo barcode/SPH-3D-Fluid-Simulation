@@ -62,7 +62,7 @@ void PARTICLE_SYSTEM::loadScenario(int newScenario)
         _walls.push_back(WALL(VEC3D(-1, 0, 0), VEC3D(boxSize.x / 2.0, 0, 0))); // right
         _walls.push_back(WALL(VEC3D(0, 1, 0), VEC3D(0, -boxSize.y / 2.0, 0))); // bottom
 
-        vector<PARTICLE>& firstGridCell = (*grid)(0, 0, 0);
+        std::vector<PARTICLE>& firstGridCell = (*grid)(0, 0, 0);
 
         // add particles
 
@@ -77,9 +77,9 @@ void PARTICLE_SYSTEM::loadScenario(int newScenario)
             }
         }
 
-        cout << "Loaded dam scenario" << endl;
-        cout << "Grid size is " << (*grid).xRes() << "x" << (*grid).yRes() << "x" << (*grid).zRes() << endl;
-        cout << "Simulating " << PARTICLE::count << " particles" << endl;
+        std::cout << "Loaded dam scenario" << std::endl;
+        std::cout << "Grid size is " << (*grid).xRes() << "x" << (*grid).yRes() << "x" << (*grid).zRes() << std::endl;
+        std::cout << "Simulating " << PARTICLE::count << " particles" << std::endl;
 
     }
     else if (scenario == SCENARIO_CUBE)
@@ -105,7 +105,7 @@ void PARTICLE_SYSTEM::loadScenario(int newScenario)
         _walls.push_back(WALL(VEC3D(-1, 0, 0), VEC3D(boxSize.x / 2.0, 0, 0))); // right
         _walls.push_back(WALL(VEC3D(0, 1, 0), VEC3D(0, -boxSize.y / 2.0, 0))); // bottom
 
-        vector<PARTICLE>& firstGridCell = (*grid)(0, 0, 0);
+        std::vector<PARTICLE>& firstGridCell = (*grid)(0, 0, 0);
 
         // add particles
 
@@ -120,9 +120,9 @@ void PARTICLE_SYSTEM::loadScenario(int newScenario)
             }
         }
 
-        cout << "Loaded cube scenario" << endl;
-        cout << "Grid size is " << (*grid).xRes() << "x" << (*grid).yRes() << "x" << (*grid).zRes() << endl;
-        cout << "Simulating " << PARTICLE::count << " particles" << endl;
+        std::cout << "Loaded cube scenario" << std::endl;
+        std::cout << "Grid size is " << (*grid).xRes() << "x" << (*grid).yRes() << "x" << (*grid).zRes() << std::endl;
+        std::cout << "Simulating " << PARTICLE::count << " particles" << std::endl;
     }
     else if (scenario == SCENARIO_FAUCET)
     {
@@ -147,8 +147,8 @@ void PARTICLE_SYSTEM::loadScenario(int newScenario)
         _walls.push_back(WALL(VEC3D(-1, 0, 0), VEC3D(boxSize.x / 2.0, 0, 0))); // right
         _walls.push_back(WALL(VEC3D(0, 1, 0), VEC3D(0, -boxSize.y / 2.0, 0))); // bottom
 
-        cout << "Loaded faucet scenario" << endl;
-        cout << "Grid size is " << (*grid).xRes() << "x" << (*grid).yRes() << "x" << (*grid).zRes() << endl;
+        std::cout << "Loaded faucet scenario" << std::endl;
+        std::cout << "Grid size is " << (*grid).xRes() << "x" << (*grid).yRes() << "x" << (*grid).zRes() << std::endl;
     }
 
 
@@ -256,9 +256,9 @@ void PARTICLE_SYSTEM::updateGrid()
             for (unsigned int z = 0; z < (*grid).zRes(); z++)
             {
 
-                vector<PARTICLE>& particles = (*grid)(x, y, z);
+                std::vector<PARTICLE>& particles = (*grid)(x, y, z);
 
-                //cout << particles.size() << "p's in this grid" << endl;
+                //std::cout << particles.size() << "p's in this grid" << std::endl;
 
                 for (int p = 0; p < particles.size(); p++)
                 {
@@ -269,8 +269,8 @@ void PARTICLE_SYSTEM::updateGrid()
                     int newGridCellY = (int)floor((particle.position().y + BOX_SIZE / 2.0) / h);
                     int newGridCellZ = (int)floor((particle.position().z + BOX_SIZE / 2.0) / h);
 
-                    //cout << "particle position: " << particle.position() << endl;
-                    //cout << "particle cell pos: " << newGridCellX << " " << newGridCellY << " " << newGridCellZ << endl;
+                    //std::cout << "particle position: " << particle.position() << std::endl;
+                    //std::cout << "particle cell pos: " << newGridCellX << " " << newGridCellY << " " << newGridCellZ << std::endl;
 
                     if (newGridCellX < 0)
                     {
@@ -297,7 +297,7 @@ void PARTICLE_SYSTEM::updateGrid()
                         newGridCellZ = (*grid).zRes() - 1;
                     }
 
-                    //cout << "particle cell pos: " << newGridCellX << " " << newGridCellY << " " << newGridCellZ << endl;
+                    //std::cout << "particle cell pos: " << newGridCellX << " " << newGridCellY << " " << newGridCellZ << std::endl;
 
 
                     // check if particle has moved
@@ -356,7 +356,7 @@ void PARTICLE_SYSTEM::draw()
     for (int gridCellIndex = 0; gridCellIndex < (*grid).cellCount(); gridCellIndex++)
     {
 
-        vector<PARTICLE>& particles = (*grid).data()[gridCellIndex];
+        std::vector<PARTICLE>& particles = (*grid).data()[gridCellIndex];
 
         for (int p = 0; p < particles.size(); p++)
         {
@@ -420,7 +420,7 @@ void PARTICLE_SYSTEM::stepVerlet(double dt)
     for (unsigned int gridCellIndex = 0; gridCellIndex < (*grid).cellCount(); gridCellIndex++)
     {
 
-        vector<PARTICLE>& particles = (*grid).data().at(gridCellIndex);
+        std::vector<PARTICLE>& particles = (*grid).data().at(gridCellIndex);
 
         for (unsigned int p = 0; p < particles.size(); p++)
         {
@@ -491,7 +491,7 @@ void PARTICLE_SYSTEM::calculateAcceleration()
             for (int z = 0; z < (*grid).zRes(); z++)
             {
 
-                vector<PARTICLE>& particles = (*grid)(x, y, z);
+                std::vector<PARTICLE>& particles = (*grid)(x, y, z);
 
                 for (int p = 0; p < particles.size(); p++)
                 {
@@ -535,7 +535,7 @@ void PARTICLE_SYSTEM::calculateAcceleration()
                                     break;
                                 }
 
-                                vector<PARTICLE>& neighborGridCellParticles = (*grid)(x + offsetX, y + offsetY, z + offsetZ);
+                                std::vector<PARTICLE>& neighborGridCellParticles = (*grid)(x + offsetX, y + offsetY, z + offsetZ);
 
                                 for (int i = 0; i < neighborGridCellParticles.size(); i++)
                                 {
@@ -576,14 +576,14 @@ void PARTICLE_SYSTEM::calculateAcceleration()
             for (int z = 0; z < (*grid).zRes(); z++)
             {
 
-                vector<PARTICLE>& particles = (*grid)(x, y, z);
+                std::vector<PARTICLE>& particles = (*grid)(x, y, z);
 
                 for (int p = 0; p < particles.size(); p++)
                 {
 
                     PARTICLE& particle = particles[p];
 
-                    //cout << "particle id: " << particle.id() << endl;
+                    //std::cout << "particle id: " << particle.id() << std::endl;
 
                     VEC3D f_pressure,
                           f_viscosity,
@@ -628,7 +628,7 @@ void PARTICLE_SYSTEM::calculateAcceleration()
                                     break;
                                 }
 
-                                vector<PARTICLE>& neighborGridCellParticles = (*grid)(x + offsetX, y + offsetY, z + offsetZ);
+                                std::vector<PARTICLE>& neighborGridCellParticles = (*grid)(x + offsetX, y + offsetY, z + offsetZ);
 
                                 for (int i = 0; i < neighborGridCellParticles.size(); i++)
                                 {
@@ -838,7 +838,7 @@ void PARTICLE_SYSTEM::calculateAccelerationBrute()
 
         PARTICLE& particle = _particles[i];
 
-        //cout << "particle id: " << particle.id() << endl;
+        //std::cout << "particle id: " << particle.id() << std::endl;
 
         VEC3D f_pressure,
               f_viscosity,
@@ -865,9 +865,9 @@ void PARTICLE_SYSTEM::calculateAccelerationBrute()
                 {
 
                     //neighborsVisited++;
-                    //cout << neighborsVisited << endl;
+                    //std::cout << neighborsVisited << std::endl;
 
-                    //cout << neighbor.id() << endl;
+                    //std::cout << neighbor.id() << std::endl;
 
                     VEC3D gradient;
 

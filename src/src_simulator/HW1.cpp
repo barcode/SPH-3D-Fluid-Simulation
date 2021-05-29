@@ -103,7 +103,7 @@ void displayCallback()
 ///////////////////////////////////////////////////////////////////////////////
 void reshapeCallback(int width, int height)
 {
-    cout << "reshape" << endl;
+    std::cout << "reshape" << std::endl;
     // set the viewport resolution (w x h)
     glViewport(0, 0, (GLsizei) width, (GLsizei) height);
 
@@ -167,12 +167,12 @@ void keyboardCallback(unsigned char key, int x, int y)
 
         case '=':
             particleSystem->surfaceThreshold += 0.1;
-            cout << "surface threshold: " << particleSystem->surfaceThreshold << endl;
+            std::cout << "surface threshold: " << particleSystem->surfaceThreshold << std::endl;
             break;
 
         case '-':
             particleSystem->surfaceThreshold -= 0.1;
-            cout << "surface threshold: " << particleSystem->surfaceThreshold << endl;
+            std::cout << "surface threshold: " << particleSystem->surfaceThreshold << std::endl;
             break;
 
         case 's':

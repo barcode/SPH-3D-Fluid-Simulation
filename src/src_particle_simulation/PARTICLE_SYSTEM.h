@@ -33,7 +33,6 @@
 
 #define INITIAL_SCENARIO SCENARIO_DAM
 
-using namespace std;
 
 class PARTICLE_SYSTEM
 {
@@ -61,7 +60,7 @@ public:
 
     void collisionForce(PARTICLE& particle, VEC3D& f_collision);
 
-    void getNeighborParticles(vector<PARTICLE>& totalNeighborParticles, int x, int y, int z);
+    void getNeighborParticles(std::vector<PARTICLE>& totalNeighborParticles, int x, int y, int z);
 
     double Wpoly6(double radiusSquared);
 
@@ -104,8 +103,8 @@ public:
 
 private:
     // list of particles, walls, and springs being simulated
-    vector<PARTICLE> _particles;
-    vector<WALL>     _walls;
+    std::vector<PARTICLE> _particles;
+    std::vector<WALL>     _walls;
 
     //unsigned int _particleCount;
     bool _isGridVisible;

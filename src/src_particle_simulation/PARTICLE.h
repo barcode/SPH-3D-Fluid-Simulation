@@ -12,7 +12,6 @@
 #include "VEC3D.h"
 #include <vector>
 
-using namespace std;
 
 
 

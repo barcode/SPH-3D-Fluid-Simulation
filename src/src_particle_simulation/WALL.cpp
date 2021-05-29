@@ -28,7 +28,7 @@ void WALL::draw()
 
 
     glRotatef(-angle1, 0, 1, 0);
-    //cout << "1: " << angle1 << " 2: " << angle2 << " 3: " << angle3 << endl;
+    //std::cout << "1: " << angle1 << " 2: " << angle2 << " 3: " << angle3 << std::endl;
     glRotatef(-angle2, 1, 0, 0);
 
     // make it a plane at 0,0

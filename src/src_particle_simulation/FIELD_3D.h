@@ -7,12 +7,11 @@
 #include "assert.h"
 #include "PARTICLE.h"
 
-using namespace std;
 
 class FIELD_3D
 {
 
-    typedef vector<PARTICLE> particleVector;
+    typedef std::vector<PARTICLE> particleVector;
 
 public:
 

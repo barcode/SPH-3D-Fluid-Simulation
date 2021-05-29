@@ -11,7 +11,6 @@
 #include "PARTICLE.h"
 #include "VEC3D.h"
 
-using namespace std;
 
 class WALL
 {

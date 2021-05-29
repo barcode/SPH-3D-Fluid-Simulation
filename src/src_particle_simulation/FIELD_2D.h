@@ -6,7 +6,6 @@
 
 #include "assert.h"
 
-using namespace std;
 
 class FIELD_2D
 {
