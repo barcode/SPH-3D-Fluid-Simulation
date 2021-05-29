@@ -120,7 +120,7 @@ void PARTICLE_SYSTEM::updateGrid()
                 for (int p = 0; p < particles.size(); p++)
                 {
 
-                    PARTICLE& particle = particles[p];
+                    PARTICLE& particle = particles.at(p);
 
                     int newGridCellX = (int)floor((particle.position().x + BOX_SIZE / 2.0) / h);
                     int newGridCellY = (int)floor((particle.position().y + BOX_SIZE / 2.0) / h);
@@ -158,7 +158,7 @@ void PARTICLE_SYSTEM::updateGrid()
                         (*grid)(newGridCellX, newGridCellY, newGridCellZ).push_back(particle);
 
                         // remove it from it's previous grid cell
-                        particles[p] = particles.back();
+                        particles.at(p) = particles.back();
                         particles.pop_back();
                         p--; // important! make sure to redo this index, since a new particle will (probably) be there
                     }
@@ -188,13 +188,13 @@ void PARTICLE_SYSTEM::draw()
     glMaterialfv(GL_FRONT, GL_SHININESS, &shininess);
 
     //for (unsigned int x = 0; x < _particles.size(); x++)
-    //  _particles[x].draw();
+    //  _particles.at(x).draw();
 
 #ifdef BRUTE
 
     for (unsigned int x = 0; x < _particles.size(); x++)
     {
-        _particles[x].draw();
+        _particles.at(x).draw();
     }
 
 #else
@@ -202,12 +202,12 @@ void PARTICLE_SYSTEM::draw()
     for (int gridCellIndex = 0; gridCellIndex < (*grid).cellCount(); gridCellIndex++)
     {
 
-        std::vector<PARTICLE>& particles = (*grid).data()[gridCellIndex];
+        std::vector<PARTICLE>& particles = (*grid).data().at(gridCellIndex);
 
         for (int p = 0; p < particles.size(); p++)
         {
 
-            PARTICLE& particle = particles[p];
+            PARTICLE& particle = particles.at(p);
 
             particle.draw();
 
@@ -266,7 +266,7 @@ void PARTICLE_SYSTEM::stepVerlet(double dt)
         for (unsigned int p = 0; p < particles.size(); p++)
         {
 
-            PARTICLE& particle = particles[p];
+            PARTICLE& particle = particles.at(p);
 
             VEC3D newPosition = particle.position() + particle.velocity() * dt + particle.acceleration() * dt * dt;
             VEC3D newVelocity = (newPosition - particle.position()) / dt;
@@ -300,7 +300,7 @@ void PARTICLE_SYSTEM::stepVerletBrute(double dt)
 
     for (unsigned int i = 0; i < PARTICLE::count; i++)
     {
-        PARTICLE& particle = _particles[i];
+        PARTICLE& particle = _particles.at(i);
 
         VEC3D newPosition = particle.position() + particle.velocity() * dt + particle.acceleration() * dt * dt;
         VEC3D newVelocity = (newPosition - particle.position()) / dt;
@@ -334,7 +334,7 @@ void PARTICLE_SYSTEM::calculateAcceleration()
                 for (int p = 0; p < particles.size(); p++)
                 {
 
-                    PARTICLE& particle = particles[p];
+                    PARTICLE& particle = particles.at(p);
 
                     particle.density() = 0.0;
 
@@ -378,7 +378,7 @@ void PARTICLE_SYSTEM::calculateAcceleration()
                                 for (int i = 0; i < neighborGridCellParticles.size(); i++)
                                 {
 
-                                    PARTICLE& neighborParticle = neighborGridCellParticles[i];
+                                    PARTICLE& neighborParticle = neighborGridCellParticles.at(i);
 
                                     VEC3D diffPosition = particle.position() - neighborParticle.position();
 
@@ -419,7 +419,7 @@ void PARTICLE_SYSTEM::calculateAcceleration()
                 for (int p = 0; p < particles.size(); p++)
                 {
 
-                    PARTICLE& particle = particles[p];
+                    PARTICLE& particle = particles.at(p);
 
                     //std::cout << "particle id: " << particle.id() << std::endl;
 
@@ -471,7 +471,7 @@ void PARTICLE_SYSTEM::calculateAcceleration()
                                 for (int i = 0; i < neighborGridCellParticles.size(); i++)
                                 {
 
-                                    PARTICLE& neighbor = neighborGridCellParticles[i];
+                                    PARTICLE& neighbor = neighborGridCellParticles.at(i);
 
                                     //if (particle.id() == neighbor.id()) continue; // SKIPPING COMPARISON OF THE SAME PARTICLE
 
@@ -556,7 +556,7 @@ void PARTICLE_SYSTEM::collisionForce(PARTICLE& particle, VEC3D& f_collision)
     for (unsigned int i = 0; i < _walls.size(); i++)
     {
 
-        WALL& wall = _walls[i];
+        WALL& wall = _walls.at(i);
 
         double d = (wall.point() - particle.position()).dot(wall.normal()) + 0.01; // particle radius
 
@@ -635,7 +635,7 @@ void PARTICLE_SYSTEM::calculateAccelerationBrute()
 
         // grab ith particle reference
 
-        PARTICLE& particle = _particles[i];
+        PARTICLE& particle = _particles.at(i);
 
         // now iteratate through neighbors
 
@@ -644,7 +644,7 @@ void PARTICLE_SYSTEM::calculateAccelerationBrute()
         for (int j = 0; j < PARTICLE::count; j++)
         {
 
-            PARTICLE& neighborParticle = _particles[j];
+            PARTICLE& neighborParticle = _particles.at(j);
 
             VEC3D diffPosition = particle.position() - neighborParticle.position();
 
@@ -671,7 +671,7 @@ void PARTICLE_SYSTEM::calculateAccelerationBrute()
     for (int i = 0; i < PARTICLE::count; i++)
     {
 
-        PARTICLE& particle = _particles[i];
+        PARTICLE& particle = _particles.at(i);
 
         //std::cout << "particle id: " << particle.id() << std::endl;
 
@@ -686,7 +686,7 @@ void PARTICLE_SYSTEM::calculateAccelerationBrute()
 
         for (int j = 0; j < PARTICLE::count; j++)
         {
-            PARTICLE& neighbor = _particles[j];
+            PARTICLE& neighbor = _particles.at(j);
 
             VEC3D diffPosition = particle.position() - neighbor.position();
             VEC3D diffPositionNormalized = diffPosition.normal(); // need?

@@ -17,7 +17,7 @@ void FIELD_2D::print()
 {
     for (int i = 0; i < _xRes * _yRes; i++)
     {
-        printf("%.10f,", _data[i]);
+        printf("%.10f,", _data.at(i));
     }
     printf("\n");
 }
@@ -40,7 +40,7 @@ void FIELD_2D::clear()
 {
     for (int x = 0; x < _xRes * _yRes; x++)
     {
-        _data[x] = 0.0;
+        _data.at(x) = 0.0;
     }
 }
 
@@ -51,7 +51,7 @@ FIELD_2D& FIELD_2D::operator*=(const double& scalar)
 {
     for (int x = 0; x < _xRes * _yRes; x++)
     {
-        _data[x] *= scalar;
+        _data.at(x) *= scalar;
     }
 
     return *this;
@@ -67,7 +67,7 @@ FIELD_2D& FIELD_2D::operator=(const FIELD_2D& field)
 
     for (int x = 0; x < _xRes * _yRes; x++)
     {
-        _data[x] = field._data[x];
+        _data.at(x) = field._data.at(x);
     }
 
     return *this;
@@ -81,7 +81,7 @@ double FIELD_2D::squaredSum() const
     double final = 0.0;
     for (int x = 0; x < _xRes * _yRes; x++)
     {
-        final += _data[x] * _data[x];
+        final += _data.at(x) * _data.at(x);
     }
 
     return final;
@@ -98,7 +98,7 @@ double FIELD_2D::dotProduct(FIELD_2D& field) const
     double final = 0.0;
     for (int x = 0; x < _xRes * _yRes; x++)
     {
-        final += _data[x] * field._data[x];
+        final += _data.at(x) * field._data.at(x);
     }
 
     return final;
@@ -114,7 +114,7 @@ FIELD_2D& FIELD_2D::operator-=(const FIELD_2D& field)
 
     for (int x = 0; x < _xRes * _yRes; x++)
     {
-        _data[x] -= field._data[x];
+        _data.at(x) -= field._data.at(x);
     }
 
     return *this;
@@ -130,7 +130,7 @@ FIELD_2D& FIELD_2D::operator+=(const FIELD_2D& field)
 
     for (int x = 0; x < _xRes * _yRes; x++)
     {
-        _data[x] += field._data[x];
+        _data.at(x) += field._data.at(x);
     }
 
     return *this;
@@ -147,6 +147,6 @@ void FIELD_2D::axpy(const double& scalar, const FIELD_2D& field)
 
     for (int x = 0; x < _xRes * _yRes; x++)
     {
-        _data[x] += scalar * field._data[x];
+        _data.at(x) += scalar * field._data.at(x);
     }
 }

@@ -18,7 +18,7 @@ public:
 
     inline particleVector& operator()(int x, int y, int z)
     {
-        return _data[x + y * _xRes + z * _xRes * _yRes];
+        return _data.at(x + y * _xRes + z * _xRes * _yRes);
     }
 
     // accessors

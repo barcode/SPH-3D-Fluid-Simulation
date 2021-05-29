@@ -28,7 +28,7 @@ public:
         assert(x < _xRes);
         assert(y >= 0);
         assert(y < _yRes);
-        return _data[x + y * _xRes];
+        return _data.at(x + y * _xRes);
     }
 
     // set one field to another
