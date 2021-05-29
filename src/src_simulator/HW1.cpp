@@ -42,6 +42,11 @@ int iterationCount = 0;
 double arUtilTimer(void);
 void arUtilTimerReset(void);
 
+
+BOX_SCENARIO scenario_dam;
+BOX_SCENARIO scenario_cube;
+BOX_SCENARIO scenario_faucet;
+
 ///////////////////////////////////////////////////////////////////////
 // draw coordinate axes
 ///////////////////////////////////////////////////////////////////////
@@ -192,14 +197,13 @@ void keyboardCallback(unsigned char key, int x, int y)
             break;
 
         case '1':
-            particleSystem->loadScenario(SCENARIO_DAM);
+            particleSystem->loadScenario(scenario_dam);
             break;
-
         case '2':
-            particleSystem->loadScenario(SCENARIO_CUBE);
+            particleSystem->loadScenario(scenario_cube);
             break;
         case '3':
-            particleSystem->loadScenario(SCENARIO_FAUCET);
+            particleSystem->loadScenario(scenario_faucet);
             break;
 
         case 'f':
@@ -260,6 +264,74 @@ void idleCallback()
 ///////////////////////////////////////////////////////////////////////////////
 int main(int argc, char** argv)
 {
+    //set up scenarios
+    {
+        //dam
+        {
+            scenario_dam.name = "dam";
+            scenario_dam.boxSize.x = 0.4 * 2.0;
+            scenario_dam.boxSize.y = 0.4;
+            scenario_dam.boxSize.z = 0.4 / 2.0;
+
+            for (double y = -scenario_dam.boxSize.y / 2.0; y < scenario_dam.boxSize.y / 2.0; y += h / 2.0)
+            {
+                for (double x = -scenario_dam.boxSize.x / 2.0; x < -scenario_dam.boxSize.x / 4.0; x += h / 2.0)
+                {
+                    for (double z = -scenario_dam.boxSize.z / 2.0; z < scenario_dam.boxSize.z / 2.0; z += h / 2.0)
+                    {
+                        scenario_dam.initial_particles.push_back(PARTICLE(VEC3D(x, y, z)));
+                    }
+                }
+            }
+        }
+        //cube
+        {
+            scenario_cube.name = "cube";
+            scenario_cube.boxSize.x = 0.4;
+            scenario_cube.boxSize.y = 0.4;
+            scenario_cube.boxSize.z = 0.4;
+
+            for (double y = 0; y < scenario_cube.boxSize.y; y += h / 2.0)
+            {
+                for (double x = -scenario_cube.boxSize.x / 4.0; x < scenario_cube.boxSize.x / 4.0; x += h / 2.0)
+                {
+                    for (double z = -scenario_cube.boxSize.z / 4.0; z < scenario_cube.boxSize.z / 4.0; z += h / 2.0)
+                    {
+                        scenario_cube.initial_particles.push_back(PARTICLE(VEC3D(x, y, z)));
+                    }
+                }
+            }
+        }
+        //faucet
+        {
+            static constexpr double sx = 0.4;
+            static constexpr double sy = 0.4;
+            static constexpr double sz = 0.4;
+            scenario_faucet.name = "faucet";
+            scenario_faucet.boxSize.x = sx;
+            scenario_faucet.boxSize.y = sy;
+            scenario_faucet.boxSize.z = sz;
+
+            scenario_faucet.particle_generator = [](auto & sys)
+            {
+                if (PARTICLE::count < 3000)
+                {
+                    VEC3D initialVelocity(-1.8, -1.8, 0);
+
+                    sys.addParticle(VEC3D(sx / 2.0 - h / 2.0, sy + h * 0.6, 0), initialVelocity);
+                    sys.addParticle(VEC3D(sx / 2.0 - h / 2.0, sy, 0), initialVelocity);
+                    sys.addParticle(VEC3D(sx / 2.0 - h / 2.0, sy + h * -0.6, 0), initialVelocity);
+
+                    sys.addParticle(VEC3D(sx / 2.0 - h / 2.0, sy + h * 0.3, h * 0.6), initialVelocity);
+                    sys.addParticle(VEC3D(sx / 2.0 - h / 2.0, sy + h * 0.3, h * -0.6), initialVelocity);
+
+                    sys.addParticle(VEC3D(sx / 2.0 - h / 2.0, sy + h * -0.3, h * 0.6), initialVelocity);
+                    sys.addParticle(VEC3D(sx / 2.0 - h / 2.0, sy + h * -0.3, h * -0.6), initialVelocity);
+                }
+            };
+        }
+    }
+
     char title[] = "sph";
 
     glutInit(&argc, argv);
@@ -305,7 +377,7 @@ int main(int argc, char** argv)
     glvuVec3f center(0.0, 0.0, 0.0);
     glvu.SetWorldCenter(center);
 
-    particleSystem = std::make_unique<PARTICLE_SYSTEM>();
+    particleSystem = std::make_unique<PARTICLE_SYSTEM>(scenario_dam);
 
     // Let GLUT take over
     glutMainLoop();

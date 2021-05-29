@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 #include "PARTICLE.h"
 #include "WALL.h"
 #include <vector>
@@ -33,12 +35,22 @@
 
 #define INITIAL_SCENARIO SCENARIO_DAM
 
+class PARTICLE_SYSTEM;
+
+struct BOX_SCENARIO
+{
+    std::string           name;
+    VEC3D                 boxSize;
+    std::vector<PARTICLE> initial_particles;
+    std::function<void(PARTICLE_SYSTEM&)> particle_generator;
+
+};
 
 class PARTICLE_SYSTEM
 {
 
 public:
-    PARTICLE_SYSTEM();
+    PARTICLE_SYSTEM(const BOX_SCENARIO& s);
     ~PARTICLE_SYSTEM();
 
     void updateGrid();
@@ -82,12 +94,11 @@ public:
 
     void toggleTumble();
 
-    void generateFaucetParticleSet();
 
     void setGravityVectorWithViewVector(VEC3D viewVector);
 
+    void loadScenario(const BOX_SCENARIO& s);
 
-    void loadScenario(int scenario);
 
 
 
@@ -111,5 +122,7 @@ private:
     bool _tumble;
 
     VEC3D boxSize;
+    std::function<void(PARTICLE_SYSTEM&)> _particle_generator;
 
+    unsigned int _iteration = 0;
 };

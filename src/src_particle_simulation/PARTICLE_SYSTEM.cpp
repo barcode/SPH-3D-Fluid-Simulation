@@ -3,22 +3,19 @@
 
 
 
-unsigned int iteration = 0;
-int scenario;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Constructor
 ///////////////////////////////////////////////////////////////////////////////
-PARTICLE_SYSTEM::PARTICLE_SYSTEM() :
+PARTICLE_SYSTEM::PARTICLE_SYSTEM(const BOX_SCENARIO& s) :
     _isGridVisible(false), surfaceThreshold(0.01), gravityVector(0.0, GRAVITY_ACCELERATION, 0.0), grid(NULL)
 {
-    loadScenario(INITIAL_SCENARIO);
+    loadScenario(s);
 }
 
-void PARTICLE_SYSTEM::loadScenario(int newScenario)
+void PARTICLE_SYSTEM::loadScenario(const BOX_SCENARIO& s)
 {
 
-    scenario = newScenario;
 
     // remove all particles
 
@@ -32,148 +29,27 @@ void PARTICLE_SYSTEM::loadScenario(int newScenario)
 
 
     // reset params
+    _particle_generator = s.particle_generator;
 
     PARTICLE::count = 0;
+    _iteration = 0;
+    boxSize = s.boxSize;
+    int gridXRes = (int)ceil(boxSize.x / h);
+    int gridYRes = (int)ceil(boxSize.y / h);
+    int gridZRes = (int)ceil(boxSize.z / h);
+    grid = new FIELD_3D(gridXRes, gridYRes, gridZRes);
+    _walls.push_back(WALL(VEC3D(0, 0, 1), VEC3D(0, 0, -boxSize.z / 2.0))); // back
+    _walls.push_back(WALL(VEC3D(0, 0, -1), VEC3D(0, 0, boxSize.z / 2.0))); // front
+    _walls.push_back(WALL(VEC3D(1, 0, 0), VEC3D(-boxSize.x / 2.0, 0, 0))); // left
+    _walls.push_back(WALL(VEC3D(-1, 0, 0), VEC3D(boxSize.x / 2.0, 0, 0))); // right
+    _walls.push_back(WALL(VEC3D(0, 1, 0), VEC3D(0, -boxSize.y / 2.0, 0))); // bottom
+    (*grid)(0, 0, 0) = s.initial_particles;
 
-    iteration = 0;
-
-
-    if (scenario == SCENARIO_DAM)
-    {
-
-        // create long grid
-
-        boxSize.x = BOX_SIZE * 2.0;
-        boxSize.y = BOX_SIZE;
-        boxSize.z = BOX_SIZE / 2.0;
-
-        int gridXRes = (int)ceil(boxSize.x / h);
-        int gridYRes = (int)ceil(boxSize.y / h);
-        int gridZRes = (int)ceil(boxSize.z / h);
-
-        grid = new FIELD_3D(gridXRes, gridYRes, gridZRes);
-
-
-        // add walls
-
-        _walls.push_back(WALL(VEC3D(0, 0, 1), VEC3D(0, 0, -boxSize.z / 2.0))); // back
-        _walls.push_back(WALL(VEC3D(0, 0, -1), VEC3D(0, 0, boxSize.z / 2.0))); // front
-        _walls.push_back(WALL(VEC3D(1, 0, 0), VEC3D(-boxSize.x / 2.0, 0, 0))); // left
-        _walls.push_back(WALL(VEC3D(-1, 0, 0), VEC3D(boxSize.x / 2.0, 0, 0))); // right
-        _walls.push_back(WALL(VEC3D(0, 1, 0), VEC3D(0, -boxSize.y / 2.0, 0))); // bottom
-
-        std::vector<PARTICLE>& firstGridCell = (*grid)(0, 0, 0);
-
-        // add particles
-
-        for (double y = -boxSize.y / 2.0; y < boxSize.y / 2.0; y += h / 2.0)
-        {
-            for (double x = -boxSize.x / 2.0; x < -boxSize.x / 4.0; x += h / 2.0)
-            {
-                for (double z = -boxSize.z / 2.0; z < boxSize.z / 2.0; z += h / 2.0)
-                {
-                    firstGridCell.push_back(PARTICLE(VEC3D(x, y, z)));
-                }
-            }
-        }
-
-        std::cout << "Loaded dam scenario" << std::endl;
-        std::cout << "Grid size is " << (*grid).xRes() << "x" << (*grid).yRes() << "x" << (*grid).zRes() << std::endl;
-        std::cout << "Simulating " << PARTICLE::count << " particles" << std::endl;
-
-    }
-    else if (scenario == SCENARIO_CUBE)
-    {
-
-        // create cubed grid
-
-        boxSize.x = BOX_SIZE;
-        boxSize.y = BOX_SIZE;
-        boxSize.z = BOX_SIZE;
-
-        int gridXRes = (int)ceil(boxSize.x / h);
-        int gridYRes = (int)ceil(boxSize.y / h);
-        int gridZRes = (int)ceil(boxSize.z / h);
-
-        grid = new FIELD_3D(gridXRes, gridYRes, gridZRes);
-
-        // add walls
-
-        _walls.push_back(WALL(VEC3D(0, 0, 1), VEC3D(0, 0, -boxSize.z / 2.0))); // back
-        _walls.push_back(WALL(VEC3D(0, 0, -1), VEC3D(0, 0, boxSize.z / 2.0))); // front
-        _walls.push_back(WALL(VEC3D(1, 0, 0), VEC3D(-boxSize.x / 2.0, 0, 0))); // left
-        _walls.push_back(WALL(VEC3D(-1, 0, 0), VEC3D(boxSize.x / 2.0, 0, 0))); // right
-        _walls.push_back(WALL(VEC3D(0, 1, 0), VEC3D(0, -boxSize.y / 2.0, 0))); // bottom
-
-        std::vector<PARTICLE>& firstGridCell = (*grid)(0, 0, 0);
-
-        // add particles
-
-        for (double y = 0; y < boxSize.y; y += h / 2.0)
-        {
-            for (double x = -boxSize.x / 4.0; x < boxSize.x / 4.0; x += h / 2.0)
-            {
-                for (double z = -boxSize.z / 4.0; z < boxSize.z / 4.0; z += h / 2.0)
-                {
-                    firstGridCell.push_back(PARTICLE(VEC3D(x, y, z)));
-                }
-            }
-        }
-
-        std::cout << "Loaded cube scenario" << std::endl;
-        std::cout << "Grid size is " << (*grid).xRes() << "x" << (*grid).yRes() << "x" << (*grid).zRes() << std::endl;
-        std::cout << "Simulating " << PARTICLE::count << " particles" << std::endl;
-    }
-    else if (scenario == SCENARIO_FAUCET)
-    {
-
-        // create cubed grid
-
-        boxSize.x = BOX_SIZE;
-        boxSize.y = BOX_SIZE;
-        boxSize.z = BOX_SIZE;
-
-        int gridXRes = (int)ceil(boxSize.x / h);
-        int gridYRes = (int)ceil(boxSize.y / h);
-        int gridZRes = (int)ceil(boxSize.z / h);
-
-        grid = new FIELD_3D(gridXRes, gridYRes, gridZRes);
-
-        // add walls
-
-        _walls.push_back(WALL(VEC3D(0, 0, 1), VEC3D(0, 0, -boxSize.z / 2.0))); // back
-        _walls.push_back(WALL(VEC3D(0, 0, -1), VEC3D(0, 0, boxSize.z / 2.0))); // front
-        _walls.push_back(WALL(VEC3D(1, 0, 0), VEC3D(-boxSize.x / 2.0, 0, 0))); // left
-        _walls.push_back(WALL(VEC3D(-1, 0, 0), VEC3D(boxSize.x / 2.0, 0, 0))); // right
-        _walls.push_back(WALL(VEC3D(0, 1, 0), VEC3D(0, -boxSize.y / 2.0, 0))); // bottom
-
-        std::cout << "Loaded faucet scenario" << std::endl;
-        std::cout << "Grid size is " << (*grid).xRes() << "x" << (*grid).yRes() << "x" << (*grid).zRes() << std::endl;
-    }
-
+    std::cout << "Loaded '" << s.name << "' scenario" << std::endl;
+    std::cout << "Grid size is " << (*grid).xRes() << "x" << (*grid).yRes() << "x" << (*grid).zRes() << std::endl;
+    std::cout << "Simulating " << PARTICLE::count << " particles" << std::endl;
 
     updateGrid();
-
-
-
-}
-
-void PARTICLE_SYSTEM::generateFaucetParticleSet()
-{
-
-    VEC3D initialVelocity(-1.8, -1.8, 0);
-
-    addParticle(VEC3D(BOX_SIZE / 2.0 - h / 2.0, BOX_SIZE + h * 0.6, 0), initialVelocity);
-    addParticle(VEC3D(BOX_SIZE / 2.0 - h / 2.0, BOX_SIZE, 0), initialVelocity);
-    addParticle(VEC3D(BOX_SIZE / 2.0 - h / 2.0, BOX_SIZE + h * -0.6, 0), initialVelocity);
-
-    addParticle(VEC3D(BOX_SIZE / 2.0 - h / 2.0, BOX_SIZE + h * 0.3, h * 0.6), initialVelocity);
-    addParticle(VEC3D(BOX_SIZE / 2.0 - h / 2.0, BOX_SIZE + h * 0.3, h * -0.6), initialVelocity);
-
-    addParticle(VEC3D(BOX_SIZE / 2.0 - h / 2.0, BOX_SIZE + h * -0.3, h * 0.6), initialVelocity);
-    addParticle(VEC3D(BOX_SIZE / 2.0 - h / 2.0, BOX_SIZE + h * -0.3, h * -0.6), initialVelocity);
-
-
 }
 
 void PARTICLE_SYSTEM::addParticle(const VEC3D& position, const VEC3D& velocity)
@@ -435,14 +311,14 @@ void PARTICLE_SYSTEM::stepVerlet(double dt)
         }
     }
 
-    if (scenario == SCENARIO_FAUCET && PARTICLE::count < MAX_PARTICLES)
+    if (_particle_generator)
     {
-        generateFaucetParticleSet();
+        _particle_generator(*this);
     }
 
     updateGrid();
 
-    iteration++;
+    _iteration++;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -450,9 +326,9 @@ void PARTICLE_SYSTEM::stepVerlet(double dt)
 ///////////////////////////////////////////////////////////////////////////////
 void PARTICLE_SYSTEM::stepVerletBrute(double dt)
 {
-    if (PARTICLE::count < MAX_PARTICLES && iteration % 12 == 0)
+    if (_particle_generator)
     {
-        generateFaucetParticleSet();
+        _particle_generator(*this);
     }
 
     calculateAccelerationBrute();
@@ -469,7 +345,7 @@ void PARTICLE_SYSTEM::stepVerletBrute(double dt)
         particle.velocity() = newVelocity;
     }
 
-    iteration++;
+    _iteration++;
 
 }
 
