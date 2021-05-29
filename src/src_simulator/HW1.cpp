@@ -8,7 +8,6 @@
 
 #define BRUTE1
 
-
 #include <cstdlib>
 #include <sys/time.h>
 
@@ -27,7 +26,6 @@
 #include "PARTICLE_SYSTEM.h"
 #include <vector>
 #include <memory>
-
 
 // GUI interaction stuff
 GLVU glvu;
@@ -91,7 +89,6 @@ void displayCallback()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
 
-
     //drawAxes();
 
     // draw the particle system and walls
@@ -153,17 +150,6 @@ void keyboardCallback(unsigned char key, int x, int y)
             glutPostRedisplay();
             break;
 
-        //    case 't':
-        //      for (int i = 0; i < 200; i++) {
-        //#ifdef BRUTE
-        //        particleSystem->stepVerletBrute(dt);
-        //#else
-        //        particleSystem->stepVerlet(dt);
-        //#endif
-        //        glutPostRedisplay();
-        //      }
-        //      break;
-
         case 'g':
 #ifndef BRUTE
             particleSystem->toggleGridVisble();
@@ -187,10 +173,6 @@ void keyboardCallback(unsigned char key, int x, int y)
         case '/':
             particleSystem->toggleGravity();
             break;
-
-        //    case '.':
-        //      particleSystem->toggleArrows();
-        //      break;
 
         case 't':
             particleSystem->toggleTumble();
@@ -242,10 +224,6 @@ void idleCallback()
     {
         return;
     }
-
-    //particleSystem.stepEuler(dt);
-    //particleSystem.stepMidpoint(dt);
-    //particleSystem.stepRK4(dt);
 #ifdef BRUTE
     particleSystem->stepVerletBrute(dt);
 #else

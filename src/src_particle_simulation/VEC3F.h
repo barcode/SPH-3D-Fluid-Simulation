@@ -12,7 +12,6 @@
 
 class VEC3F
 {
-
 public:
     // Standard constructors
     VEC3F(float x = 0, float y = 0, float z = 0)
@@ -118,19 +117,19 @@ public:
     float dot(const VEC3F& b) const
     {
         return x * b.x + y * b.y + z * b.z;
-    };
+    }
     void clear()
     {
         float zero = 0.0;
         _element[0] = zero;
         _element[1] = zero;
         _element[2] = zero;
-    };
+    }
 
     float magnitude()
     {
         return sqrt(_element[0] * _element[0] + _element[1] * _element[1] + _element[2] * _element[2]);
-    };
+    }
     VEC3F normalize()
     {
         float l = _element[0] * _element[0] +
@@ -144,7 +143,7 @@ public:
             _element[2] *= inv;
         }
         return *this;
-    };
+    }
     VEC3F normal()
     {
         VEC3F a = *this;

@@ -1,9 +1,5 @@
 #include "PARTICLE_SYSTEM.h"
 
-
-
-
-
 ///////////////////////////////////////////////////////////////////////////////
 // Constructor
 ///////////////////////////////////////////////////////////////////////////////
@@ -15,22 +11,15 @@ PARTICLE_SYSTEM::PARTICLE_SYSTEM(const BOX_SCENARIO& s) :
 
 void PARTICLE_SYSTEM::loadScenario(const BOX_SCENARIO& s)
 {
-
-
     // remove all particles
-
     if (grid)
     {
         delete grid;
-
     }
-
     _walls.clear();
-
 
     // reset params
     _particle_generator = s.particle_generator;
-
     PARTICLE::count = 0;
     _iteration = 0;
     boxSize = s.boxSize;
@@ -60,13 +49,10 @@ void PARTICLE_SYSTEM::addParticle(const VEC3D& position, const VEC3D& velocity)
 #else
     (*grid)(0, 0, 0).push_back(PARTICLE(position, velocity));
 #endif
-
-    //_particleCount++;
 }
 
 void PARTICLE_SYSTEM::addParticle(const VEC3D& position)
 {
-
     addParticle(position, VEC3D());
 }
 
@@ -112,19 +98,16 @@ void PARTICLE_SYSTEM::toggleArrows()
 
 void PARTICLE_SYSTEM::setGravityVectorWithViewVector(VEC3D viewVector)
 {
-
     if (_tumble)
     {
         gravityVector = viewVector * GRAVITY_ACCELERATION;
     }
-
 }
 
 // to update the grid cells particles are located in
 // should be called right after particle positions are updated
 void PARTICLE_SYSTEM::updateGrid()
 {
-
     for (unsigned int x = 0; x < (*grid).xRes(); x++)
     {
         for (unsigned int y = 0; y < (*grid).yRes(); y++)
@@ -134,8 +117,6 @@ void PARTICLE_SYSTEM::updateGrid()
 
                 std::vector<PARTICLE>& particles = (*grid)(x, y, z);
 
-                //std::cout << particles.size() << "p's in this grid" << std::endl;
-
                 for (int p = 0; p < particles.size(); p++)
                 {
 
@@ -144,9 +125,6 @@ void PARTICLE_SYSTEM::updateGrid()
                     int newGridCellX = (int)floor((particle.position().x + BOX_SIZE / 2.0) / h);
                     int newGridCellY = (int)floor((particle.position().y + BOX_SIZE / 2.0) / h);
                     int newGridCellZ = (int)floor((particle.position().z + BOX_SIZE / 2.0) / h);
-
-                    //std::cout << "particle position: " << particle.position() << std::endl;
-                    //std::cout << "particle cell pos: " << newGridCellX << " " << newGridCellY << " " << newGridCellZ << std::endl;
 
                     if (newGridCellX < 0)
                     {
@@ -173,25 +151,17 @@ void PARTICLE_SYSTEM::updateGrid()
                         newGridCellZ = (*grid).zRes() - 1;
                     }
 
-                    //std::cout << "particle cell pos: " << newGridCellX << " " << newGridCellY << " " << newGridCellZ << std::endl;
-
-
                     // check if particle has moved
-
                     if (x != newGridCellX || y != newGridCellY || z != newGridCellZ)
                     {
-
                         // move the particle to the new grid cell
-
                         (*grid)(newGridCellX, newGridCellY, newGridCellZ).push_back(particle);
 
                         // remove it from it's previous grid cell
-
                         particles[p] = particles.back();
                         particles.pop_back();
                         p--; // important! make sure to redo this index, since a new particle will (probably) be there
                     }
-
                 }
             }
         }
@@ -249,13 +219,10 @@ void PARTICLE_SYSTEM::draw()
 
     if (_isGridVisible)
     {
-
         // draw the grid
-
         glColor3fv(lightGreyColor);
 
         //double offset = -BOX_SIZE/2.0+h/2.0;
-
         for (int x = 0; x < grid->xRes(); x++)
         {
             for (int y = 0; y < grid->yRes(); y++)
@@ -271,9 +238,7 @@ void PARTICLE_SYSTEM::draw()
                 }
             }
         }
-
     }
-
 
 #endif
 
@@ -335,7 +300,6 @@ void PARTICLE_SYSTEM::stepVerletBrute(double dt)
 
     for (unsigned int i = 0; i < PARTICLE::count; i++)
     {
-
         PARTICLE& particle = _particles[i];
 
         VEC3D newPosition = particle.position() + particle.velocity() * dt + particle.acceleration() * dt * dt;
@@ -344,9 +308,7 @@ void PARTICLE_SYSTEM::stepVerletBrute(double dt)
         particle.position() = newPosition;
         particle.velocity() = newVelocity;
     }
-
     _iteration++;
-
 }
 
 /*
@@ -581,12 +543,10 @@ void PARTICLE_SYSTEM::calculateAcceleration()
 
                     VEC3D f_collision;
                     collisionForce(particle, f_collision);
-
                 }
             }
         }
     }
-
 }
 
 
@@ -605,7 +565,6 @@ void PARTICLE_SYSTEM::collisionForce(PARTICLE& particle, VEC3D& f_collision)
             // This is an alernate way of calculating collisions of particles against walls, but produces some jitter at boundaries
             //particle.position() += d * wall.normal();
             //particle.velocity() -= particle.velocity().dot(wall.normal()) * 1.9 * wall.normal();
-
             particle.acceleration() += WALL_K * wall.normal() * d;
             particle.acceleration() += WALL_DAMPING * particle.velocity().dot(wall.normal()) * wall.normal();
         }
@@ -758,7 +717,6 @@ void PARTICLE_SYSTEM::calculateAccelerationBrute()
 
                 colorFieldLaplacian += Wpoly6Laplacian(radiusSquared) / neighbor.density();
             }
-
         }
 
         f_pressure *= -PARTICLE_MASS;
@@ -779,10 +737,8 @@ void PARTICLE_SYSTEM::calculateAccelerationBrute()
 
         if (colorFieldNormalMagnitude > surfaceThreshold)
         {
-
             particle.flag() = true;
             f_surface = -SURFACE_TENSION * colorFieldLaplacian * colorFieldNormal / colorFieldNormalMagnitude;
-
         }
         else
         {
@@ -790,16 +746,12 @@ void PARTICLE_SYSTEM::calculateAccelerationBrute()
         }
 
         // ADD IN SPH FORCES
-
         particle.acceleration() = (f_pressure + f_viscosity + f_surface + f_gravity) / particle.density();
 
-
         // EXTERNAL FORCES HERE (USER INTERACTION, SWIRL)
-
         VEC3D f_collision;
 
         collisionForce(particle, f_collision);
-
     }
 }
 

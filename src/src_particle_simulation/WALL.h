@@ -11,7 +11,6 @@
 #include "PARTICLE.h"
 #include "VEC3D.h"
 
-
 class WALL
 {
 public:
@@ -24,11 +23,11 @@ public:
     VEC3D& normal()
     {
         return _normal;
-    };
+    }
     VEC3D& point()
     {
         return _point;
-    };
+    }
 
 private:
     VEC3D _normal;

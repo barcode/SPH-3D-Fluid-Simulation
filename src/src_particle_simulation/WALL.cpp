@@ -36,6 +36,5 @@ void WALL::draw()
     glScalef(20, 20, 1);
     glutSolidCube(thickness);
 
-
     glPopMatrix();
 }

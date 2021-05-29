@@ -6,7 +6,6 @@
 
 #include "assert.h"
 
-
 class FIELD_2D
 {
 
@@ -30,7 +29,7 @@ public:
         assert(y >= 0);
         assert(y < _yRes);
         return _data[x + y * _xRes];
-    };
+    }
 
     // set one field to another
     FIELD_2D& operator=(const FIELD_2D& field);
@@ -48,19 +47,19 @@ public:
     int xRes() const
     {
         return _xRes;
-    };
+    }
     int yRes() const
     {
         return _yRes;
-    };
+    }
     int totalCells() const
     {
         return _xRes * _yRes;
-    };
+    }
     std::vector<double>& data()
     {
         return _data;
-    };
+    }
 
     // set the size of the array
     void resize(int xRes, int yRes);

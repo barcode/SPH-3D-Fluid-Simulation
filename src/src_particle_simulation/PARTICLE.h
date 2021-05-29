@@ -12,17 +12,9 @@
 #include "VEC3D.h"
 #include <vector>
 
-
-
-
 class PARTICLE
 {
-
-
-
-
 public:
-
     static bool isSurfaceVisible;
     static bool showArrows;
 
@@ -39,13 +31,13 @@ public:
     void clearForce()
     {
         _force *= 0;
-    };
+    }
 
     // accumulate forces
     void addForce(VEC3D newForce)
     {
         _force += newForce;
-    };
+    }
 
     void calculateAcceleration();
 
@@ -53,11 +45,11 @@ public:
     VEC3D& position()
     {
         return _position;
-    };
+    }
     VEC3D& velocity()
     {
         return _velocity;
-    };
+    }
     VEC3D& acceleration()
     {
         return _acceleration;
@@ -65,23 +57,23 @@ public:
     VEC3D& force()
     {
         return _force;
-    };
+    }
     double& density()
     {
         return _density;
-    };
+    }
     double& pressure()
     {
         return _pressure;
-    };
+    }
     bool& flag()
     {
         return _flag;
-    };
+    }
     int& id()
     {
         return _id;
-    };
+    }
     VEC3D normal;
 
     void clearParameters();
@@ -98,5 +90,4 @@ private:
     bool _flag;
     int _id;
     GLUquadricObj* myQuadric;
-
 };

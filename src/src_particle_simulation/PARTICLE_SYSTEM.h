@@ -5,14 +5,7 @@
 #include "PARTICLE.h"
 #include "WALL.h"
 #include <vector>
-//#include <tr1/tuple>
-//#include <map>
 #include "FIELD_3D.h"
-
-
-#define SCENARIO_DAM      0
-#define SCENARIO_FAUCET   1
-#define SCENARIO_CUBE     2
 
 #define h 0.0457 //0.02 //0.045
 
@@ -26,14 +19,10 @@
 
 #define GRAVITY_ACCELERATION -9.80665
 
-
 #define WALL_K 10000.0 // wall spring constant
 #define WALL_DAMPING -0.9 // wall damping constant
 
 #define BOX_SIZE 0.4
-#define MAX_PARTICLES 3000
-
-#define INITIAL_SCENARIO SCENARIO_DAM
 
 class PARTICLE_SYSTEM;
 
@@ -94,15 +83,9 @@ public:
 
     void toggleTumble();
 
-
     void setGravityVectorWithViewVector(VEC3D viewVector);
 
     void loadScenario(const BOX_SCENARIO& s);
-
-
-
-
-
 
     //typedef std::tr1::tuple<int,int,int> gridKey;
     //std::map<gridKey, std::vector<PARTICLE> > grid;

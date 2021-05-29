@@ -42,14 +42,6 @@ PARTICLE::PARTICLE(const VEC3D& position, const VEC3D& velocity) :
 ///////////////////////////////////////////////////////////////////////////////
 void PARTICLE::draw()
 {
-    /*
-    if (_flag)
-      glMaterialfv(GL_FRONT, GL_DIFFUSE, red);
-    else
-      glMaterialfv(GL_FRONT, GL_DIFFUSE, blue);
-    */
-
-
     if (_flag && isSurfaceVisible)
     {
         glMaterialfv(GL_FRONT, GL_DIFFUSE, purpleColor);
@@ -75,8 +67,6 @@ void PARTICLE::draw()
             gluQuadricNormals(myQuadric, GLU_SMOOTH);
         }
 
-
-
         double angle1 = asin(_velocity[0]) * 180.0 / M_PI;
         double angle2 = asin(_velocity[1]) * 180.0 / M_PI;
         //double angle3 = asin(_velocity[2]) * 180.0 / M_PI;
@@ -91,10 +81,6 @@ void PARTICLE::draw()
         glutSolidCone(0.003, 0.01, 10, 10);
 
         glFlush();
-
-
-
-        //;
     }
     else
     {
@@ -111,7 +97,4 @@ void PARTICLE::clearParameters()
     _acceleration = VEC3D();
     _density = 0.0;
     _pressure = 0.0;
-
-
 }
-
