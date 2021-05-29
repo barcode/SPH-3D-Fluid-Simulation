@@ -17,14 +17,14 @@ public:
     WALL(const VEC3D& normal, const VEC3D& point);
 
     // draw to OGL
-    void draw();
+    void draw() const;
 
     // accessors
-    VEC3D& normal()
+    const VEC3D& normal() const
     {
         return _normal;
     }
-    VEC3D& point()
+    const VEC3D& point() const
     {
         return _point;
     }

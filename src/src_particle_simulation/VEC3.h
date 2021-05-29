@@ -43,6 +43,10 @@ public:
     {
         return _element.at(i);
     }
+    FT at(int i) const
+    {
+        return _element.at(i);
+    }
 
     VEC3& operator+=(const VEC3& v)
     {
