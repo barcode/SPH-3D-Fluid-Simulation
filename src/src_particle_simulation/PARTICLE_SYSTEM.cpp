@@ -554,10 +554,9 @@ void PARTICLE_SYSTEM::collisionForce(PARTICLE& particle, VEC3D& f_collision)
 {
     const auto collide=[&](const auto& obj)
     {
-        double d = obj.penetration_depth(particle, 0.01); // particle radius
+        const auto [d, normal] = obj.collide(particle, 0.01); // particle radius
         if (d > 0.0)
         {
-            const VEC3D normal = obj.penetration_normal(particle);
             // This is an alernate way of calculating collisions of particles against walls, but produces some jitter at boundaries
             //particle.position() += d * wall.normal();
             //particle.velocity() -= particle.velocity().dot(wall.normal()) * 1.9 * wall.normal();

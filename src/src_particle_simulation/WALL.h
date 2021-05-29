@@ -23,13 +23,9 @@ public:
         return _point;
     }
 
-    double penetration_depth(const PARTICLE& p, double part_r) const
+    std::pair<double, VEC3D> collide(const PARTICLE& p, double part_r) const
     {
-        return (point() - p.position()).dot(normal()) + part_r;
-    }
-    const VEC3D& penetration_normal(const PARTICLE&) const
-    {
-        return normal();
+        return {(point() - p.position()).dot(normal()) + part_r, normal()};
     }
 
 private:
