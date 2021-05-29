@@ -4,6 +4,7 @@
 
 #include "PARTICLE.h"
 #include "WALL.h"
+#include "CYLINDRICAL_WALL.h"
 #include <vector>
 #include "FIELD_3D.h"
 
@@ -26,20 +27,33 @@
 
 class PARTICLE_SYSTEM;
 
-struct BOX_SCENARIO
+struct SCENARIO
 {
     std::string           name;
     VEC3D                 boxSize;
-    std::vector<PARTICLE> initial_particles;
-    std::function<void(PARTICLE_SYSTEM&)> particle_generator;
 
+    struct PARTICLES
+    {
+        std::vector<PARTICLE>                 initial;
+        std::function<void(PARTICLE_SYSTEM&)> generator;
+    };
+    PARTICLES particles;
+
+    struct COLLISION
+    {
+        std::vector<WALL>               walls;
+        std::vector<CYLINDRICAL_WALL>   cylindrical_walls;
+    };
+    COLLISION collision;
+
+    void generate_box_walls();
 };
 
 class PARTICLE_SYSTEM
 {
 
 public:
-    PARTICLE_SYSTEM(const BOX_SCENARIO& s);
+    PARTICLE_SYSTEM(const SCENARIO& s);
     ~PARTICLE_SYSTEM();
 
     void updateGrid();
@@ -85,7 +99,7 @@ public:
 
     void setGravityVectorWithViewVector(VEC3D viewVector);
 
-    void loadScenario(const BOX_SCENARIO& s);
+    void loadScenario(const SCENARIO& s);
 
     //typedef std::tr1::tuple<int,int,int> gridKey;
     //std::map<gridKey, std::vector<PARTICLE> > grid;
@@ -98,14 +112,11 @@ public:
 private:
     // list of particles, walls, and springs being simulated
     std::vector<PARTICLE> _particles;
-    std::vector<WALL>     _walls;
+    SCENARIO _scenario;
 
     //unsigned int _particleCount;
     bool _isGridVisible;
     bool _tumble;
-
-    VEC3D boxSize;
-    std::function<void(PARTICLE_SYSTEM&)> _particle_generator;
 
     unsigned int _iteration = 0;
 };

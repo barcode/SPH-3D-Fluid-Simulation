@@ -7,6 +7,7 @@ add_library(particle_simulation STATIC
     PARTICLE_SYSTEM.h
     VEC3.h
     WALL.h
+    CYLINDRICAL_WALL.h
 )
 
 target_include_directories(particle_simulation PUBLIC

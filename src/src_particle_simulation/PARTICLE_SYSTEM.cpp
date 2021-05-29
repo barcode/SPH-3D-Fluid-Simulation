@@ -3,36 +3,29 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Constructor
 ///////////////////////////////////////////////////////////////////////////////
-PARTICLE_SYSTEM::PARTICLE_SYSTEM(const BOX_SCENARIO& s) :
+PARTICLE_SYSTEM::PARTICLE_SYSTEM(const SCENARIO& s) :
     _isGridVisible(false), surfaceThreshold(0.01), gravityVector(0.0, GRAVITY_ACCELERATION, 0.0), grid(NULL)
 {
     loadScenario(s);
 }
 
-void PARTICLE_SYSTEM::loadScenario(const BOX_SCENARIO& s)
+void PARTICLE_SYSTEM::loadScenario(const SCENARIO& s)
 {
     // remove all particles
     if (grid)
     {
         delete grid;
     }
-    _walls.clear();
 
     // reset params
-    _particle_generator = s.particle_generator;
     PARTICLE::count = 0;
     _iteration = 0;
-    boxSize = s.boxSize;
-    int gridXRes = (int)ceil(boxSize.x / h);
-    int gridYRes = (int)ceil(boxSize.y / h);
-    int gridZRes = (int)ceil(boxSize.z / h);
+    _scenario = s;
+    int gridXRes = (int)ceil(_scenario.boxSize.x / h);
+    int gridYRes = (int)ceil(_scenario.boxSize.y / h);
+    int gridZRes = (int)ceil(_scenario.boxSize.z / h);
     grid = new FIELD_3D(gridXRes, gridYRes, gridZRes);
-    _walls.push_back(WALL(VEC3D(0, 0, 1), VEC3D(0, 0, -boxSize.z / 2.0))); // back
-    _walls.push_back(WALL(VEC3D(0, 0, -1), VEC3D(0, 0, boxSize.z / 2.0))); // front
-    _walls.push_back(WALL(VEC3D(1, 0, 0), VEC3D(-boxSize.x / 2.0, 0, 0))); // left
-    _walls.push_back(WALL(VEC3D(-1, 0, 0), VEC3D(boxSize.x / 2.0, 0, 0))); // right
-    _walls.push_back(WALL(VEC3D(0, 1, 0), VEC3D(0, -boxSize.y / 2.0, 0))); // bottom
-    (*grid)(0, 0, 0) = s.initial_particles;
+    (*grid)(0, 0, 0) = s.particles.initial;
 
     std::cout << "Loaded '" << s.name << "' scenario" << std::endl;
     std::cout << "Grid size is " << (*grid).xRes() << "x" << (*grid).yRes() << "x" << (*grid).zRes() << std::endl;
@@ -231,7 +224,9 @@ void PARTICLE_SYSTEM::draw()
                 {
                     glPushMatrix();
 
-                    glTranslated(x * h - boxSize.x / 2.0 + h / 2.0, y * h - boxSize.y / 2.0 + h / 2.0, z * h - boxSize.z / 2.0 + h / 2.0);
+                    glTranslated(x * h - _scenario.boxSize.x / 2.0 + h / 2.0,
+                                 y * h - _scenario.boxSize.y / 2.0 + h / 2.0,
+                                 z * h - _scenario.boxSize.z / 2.0 + h / 2.0);
                     glutWireCube(h);
 
                     glPopMatrix();
@@ -245,7 +240,7 @@ void PARTICLE_SYSTEM::draw()
     glColor3fv(greyColor.data());
 
     glPopMatrix();
-    glScaled(boxSize.x, boxSize.y, boxSize.z);
+    glScaled(_scenario.boxSize.x, _scenario.boxSize.y, _scenario.boxSize.z);
     glutWireCube(1.0);
     glPopMatrix();
 }
@@ -276,9 +271,9 @@ void PARTICLE_SYSTEM::stepVerlet(double dt)
         }
     }
 
-    if (_particle_generator)
+    if (_scenario.particles.generator)
     {
-        _particle_generator(*this);
+        _scenario.particles.generator(*this);
     }
 
     updateGrid();
@@ -291,9 +286,9 @@ void PARTICLE_SYSTEM::stepVerlet(double dt)
 ///////////////////////////////////////////////////////////////////////////////
 void PARTICLE_SYSTEM::stepVerletBrute(double dt)
 {
-    if (_particle_generator)
+    if (_scenario.particles.generator)
     {
-        _particle_generator(*this);
+        _scenario.particles.generator(*this);
     }
 
     calculateAccelerationBrute();
@@ -552,7 +547,7 @@ void PARTICLE_SYSTEM::calculateAcceleration()
 
 void PARTICLE_SYSTEM::collisionForce(PARTICLE& particle, VEC3D& f_collision)
 {
-    const auto collide=[&](const auto& obj)
+    const auto collide = [&](const auto & obj)
     {
         const auto [d, normal] = obj.collide(particle, 0.01); // particle radius
         if (d > 0.0)
@@ -564,7 +559,11 @@ void PARTICLE_SYSTEM::collisionForce(PARTICLE& particle, VEC3D& f_collision)
             particle.acceleration() += WALL_DAMPING * particle.velocity().dot(normal) * normal;
         }
     };
-    for(const auto& w : _walls)
+    for (const auto& w : _scenario.collision.walls)
+    {
+        collide(w);
+    }
+    for (const auto& w : _scenario.collision.cylindrical_walls)
     {
         collide(w);
     }
@@ -754,3 +753,12 @@ void PARTICLE_SYSTEM::calculateAccelerationBrute()
     }
 }
 
+
+void SCENARIO::generate_box_walls()
+{
+    collision.walls.emplace_back(VEC3D(0, 0, 1), VEC3D(0, 0, -boxSize.z / 2.0)); // back
+    collision.walls.emplace_back(VEC3D(0, 0, -1), VEC3D(0, 0, boxSize.z / 2.0)); // front
+    collision.walls.emplace_back(VEC3D(1, 0, 0), VEC3D(-boxSize.x / 2.0, 0, 0)); // left
+    collision.walls.emplace_back(VEC3D(-1, 0, 0), VEC3D(boxSize.x / 2.0, 0, 0)); // right
+    collision.walls.emplace_back(VEC3D(0, 1, 0), VEC3D(0, -boxSize.y / 2.0, 0)); // bottom
+}

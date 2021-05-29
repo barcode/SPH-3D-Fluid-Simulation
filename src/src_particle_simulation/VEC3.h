@@ -118,6 +118,10 @@ public:
         z *= v.z;
         return *this;
     }
+    VEC3 operator-() const
+    {
+        return {-x, -y, -z};
+    }
 
     // *this one* does the dot product
     FT dot(const VEC3& b) const
@@ -131,7 +135,7 @@ public:
         _element.at(2) = 0;
     }
 
-    FT magnitude()
+    FT magnitude() const
     {
         return sqrt(_element.at(0) * _element.at(0) + _element.at(1) * _element.at(1) + _element.at(2) * _element.at(2));
     }
@@ -149,14 +153,14 @@ public:
         }
         return *this;
     }
-    VEC3 normal()
+    VEC3 normal() const
     {
         VEC3 a = *this;
         a.normalize();
         return a;
     }
 
-    FT maxVal()
+    FT maxVal() const
     {
         return x > y && x > z ? x : y > z ? y : z;
     }

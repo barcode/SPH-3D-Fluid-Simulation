@@ -41,9 +41,11 @@ double arUtilTimer(void);
 void arUtilTimerReset(void);
 
 
-BOX_SCENARIO scenario_dam;
-BOX_SCENARIO scenario_cube;
-BOX_SCENARIO scenario_faucet;
+SCENARIO scenario_dam;
+SCENARIO scenario_cube;
+SCENARIO scenario_faucet;
+SCENARIO scenario_cylinder;
+SCENARIO scenario_flask_wall;
 
 ///////////////////////////////////////////////////////////////////////
 // draw coordinate axes
@@ -187,6 +189,12 @@ void keyboardCallback(unsigned char key, int x, int y)
         case '3':
             particleSystem->loadScenario(scenario_faucet);
             break;
+        case '4':
+            particleSystem->loadScenario(scenario_cylinder);
+            break;
+        case '5':
+            particleSystem->loadScenario(scenario_flask_wall);
+            break;
 
         case 'f':
             printf("*** %f (frame/sec)\n", (double)iterationCount / arUtilTimer());
@@ -250,6 +258,7 @@ int main(int argc, char** argv)
             scenario_dam.boxSize.x = 0.4 * 2.0;
             scenario_dam.boxSize.y = 0.4;
             scenario_dam.boxSize.z = 0.4 / 2.0;
+            scenario_dam.generate_box_walls();
 
             for (double y = -scenario_dam.boxSize.y / 2.0; y < scenario_dam.boxSize.y / 2.0; y += h / 2.0)
             {
@@ -257,7 +266,7 @@ int main(int argc, char** argv)
                 {
                     for (double z = -scenario_dam.boxSize.z / 2.0; z < scenario_dam.boxSize.z / 2.0; z += h / 2.0)
                     {
-                        scenario_dam.initial_particles.push_back(PARTICLE(VEC3D(x, y, z)));
+                        scenario_dam.particles.initial.push_back(PARTICLE(VEC3D(x, y, z)));
                     }
                 }
             }
@@ -268,6 +277,7 @@ int main(int argc, char** argv)
             scenario_cube.boxSize.x = 0.4;
             scenario_cube.boxSize.y = 0.4;
             scenario_cube.boxSize.z = 0.4;
+            scenario_cube.generate_box_walls();
 
             for (double y = 0; y < scenario_cube.boxSize.y; y += h / 2.0)
             {
@@ -275,7 +285,7 @@ int main(int argc, char** argv)
                 {
                     for (double z = -scenario_cube.boxSize.z / 4.0; z < scenario_cube.boxSize.z / 4.0; z += h / 2.0)
                     {
-                        scenario_cube.initial_particles.push_back(PARTICLE(VEC3D(x, y, z)));
+                        scenario_cube.particles.initial.push_back(PARTICLE(VEC3D(x, y, z)));
                     }
                 }
             }
@@ -289,8 +299,9 @@ int main(int argc, char** argv)
             scenario_faucet.boxSize.x = sx;
             scenario_faucet.boxSize.y = sy;
             scenario_faucet.boxSize.z = sz;
+            scenario_faucet.generate_box_walls();
 
-            scenario_faucet.particle_generator = [](auto & sys)
+            scenario_faucet.particles.generator = [](auto & sys)
             {
                 if (PARTICLE::count < 3000)
                 {
@@ -307,6 +318,75 @@ int main(int argc, char** argv)
                     sys.addParticle(VEC3D(sx / 2.0 - h / 2.0, sy + h * -0.3, h * -0.6), initialVelocity);
                 }
             };
+        }
+        //cylinder
+        {
+            scenario_cylinder.name = "cylinder";
+            scenario_cylinder.boxSize.x = 0.4;
+            scenario_cylinder.boxSize.y = 0.4;
+            scenario_cylinder.boxSize.z = 0.4;
+
+            for (double y = 0; y < scenario_cylinder.boxSize.y; y += h / 2.0)
+            {
+                for (double x = -scenario_cylinder.boxSize.x / 4.0; x < scenario_cylinder.boxSize.x / 4.0; x += h / 2.0)
+                {
+                    for (double z = -scenario_cylinder.boxSize.z / 4.0; z < scenario_cylinder.boxSize.z / 4.0; z += h / 2.0)
+                    {
+                        scenario_cylinder.particles.initial.push_back(PARTICLE(VEC3D(x, y, z)));
+                    }
+                }
+            }
+            // bottom
+            scenario_cylinder.collision.walls.emplace_back(
+                VEC3D(0, 1, 0),
+                VEC3D(0, -scenario_cylinder.boxSize.y / 2.0, 0));
+            //outer
+            scenario_cylinder.collision.cylindrical_walls.emplace_back(
+                VEC3D(0, -scenario_cylinder.boxSize.y / 2.0, 0),
+                VEC3D(0, 1, 0),
+                scenario_cylinder.boxSize.x / 2,
+                true);
+        }
+        //flask_wall
+        {
+            scenario_flask_wall.name = "flask_wall";
+            scenario_flask_wall.boxSize.x = 0.4;
+            scenario_flask_wall.boxSize.y = 1;
+            scenario_flask_wall.boxSize.z = 0.4;
+
+            for (double y = -scenario_flask_wall.boxSize.y / 2 ; y < scenario_flask_wall.boxSize.y / 2; y += h)
+            {
+                for (double x = -scenario_flask_wall.boxSize.x / 3.0; x < scenario_flask_wall.boxSize.x / 3.0; x += h / 2.0)
+                {
+                    for (double z = -scenario_flask_wall.boxSize.z / 3.0; z < scenario_flask_wall.boxSize.z / 3.0; z += h / 2.0)
+                    {
+                        if (std::hypot(x, z) - 0.01 > scenario_flask_wall.boxSize.x / 4)
+                        {
+                            scenario_flask_wall.particles.initial.push_back(PARTICLE(VEC3D(x, y, z)));
+                        }
+                    }
+                }
+            }
+            // bottom
+            scenario_flask_wall.collision.walls.emplace_back(
+                VEC3D(0, 1, 0),
+                VEC3D(0, -scenario_flask_wall.boxSize.y / 2.0, 0));
+            // top
+            scenario_flask_wall.collision.walls.emplace_back(
+                VEC3D(0, -1, 0),
+                VEC3D(0, scenario_flask_wall.boxSize.y / 2.0, 0));
+            //outer
+            scenario_flask_wall.collision.cylindrical_walls.emplace_back(
+                VEC3D(0, -scenario_flask_wall.boxSize.y / 2.0, 0),
+                VEC3D(0, 1, 0),
+                scenario_flask_wall.boxSize.x / 2,
+                true);
+            //inner
+            scenario_flask_wall.collision.cylindrical_walls.emplace_back(
+                VEC3D(0, -scenario_flask_wall.boxSize.y / 2.0, 0),
+                VEC3D(0, 1, 0),
+                scenario_flask_wall.boxSize.x / 4,
+                false);
         }
     }
 
