@@ -1,6 +1,4 @@
 add_library(particle_simulation STATIC
-    FIELD_2D.cpp
-    FIELD_2D.h
     FIELD_3D.cpp
     FIELD_3D.h
     PARTICLE.cpp

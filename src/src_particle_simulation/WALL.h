@@ -16,9 +16,6 @@ class WALL
 public:
     WALL(const VEC3D& normal, const VEC3D& point);
 
-    // draw to OGL
-    void draw() const;
-
     // accessors
     const VEC3D& normal() const
     {
