@@ -183,8 +183,8 @@ void PARTICLE_SYSTEM::draw()
 
     // draw the particles
     glEnable(GL_LIGHTING);
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, blueColor);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, whiteColor);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, blueColor.data());
+    glMaterialfv(GL_FRONT, GL_SPECULAR, whiteColor.data());
     glMaterialfv(GL_FRONT, GL_SHININESS, &shininess);
 
     //for (unsigned int x = 0; x < _particles.size(); x++)
@@ -220,7 +220,7 @@ void PARTICLE_SYSTEM::draw()
     if (_isGridVisible)
     {
         // draw the grid
-        glColor3fv(lightGreyColor);
+        glColor3fv(lightGreyColor.data());
 
         //double offset = -BOX_SIZE/2.0+h/2.0;
         for (int x = 0; x < grid->xRes(); x++)
@@ -242,7 +242,7 @@ void PARTICLE_SYSTEM::draw()
 
 #endif
 
-    glColor3fv(greyColor);
+    glColor3fv(greyColor.data());
 
     glPopMatrix();
     glScaled(boxSize.x, boxSize.y, boxSize.z);

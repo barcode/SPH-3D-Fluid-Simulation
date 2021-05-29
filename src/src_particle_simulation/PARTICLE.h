@@ -8,8 +8,7 @@
 #include <GL/glu.h>
 #endif
 
-#include "VEC3F.h"
-#include "VEC3D.h"
+#include "VEC3.h"
 #include <vector>
 
 class PARTICLE

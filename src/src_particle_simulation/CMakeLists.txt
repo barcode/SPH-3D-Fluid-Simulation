@@ -7,8 +7,7 @@ add_library(particle_simulation STATIC
     PARTICLE.h
     PARTICLE_SYSTEM.cpp
     PARTICLE_SYSTEM.h
-    VEC3D.h
-    VEC3F.h
+    VEC3.h
     WALL.cpp
     WALL.h
 )

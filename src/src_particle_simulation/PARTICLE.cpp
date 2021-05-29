@@ -44,15 +44,15 @@ void PARTICLE::draw()
 {
     if (_flag && isSurfaceVisible)
     {
-        glMaterialfv(GL_FRONT, GL_DIFFUSE, purpleColor);
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, purpleColor.data());
     }
     else
     {
-        glMaterialfv(GL_FRONT, GL_DIFFUSE, lightBlueColor);
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, lightBlueColor.data());
     }
 
     glPushMatrix();
-    glTranslated(_position[0], _position[1], _position[2]);
+    glTranslated(_position.at(0), _position.at(1), _position.at(2));
 
 
     if (showArrows)
@@ -67,9 +67,9 @@ void PARTICLE::draw()
             gluQuadricNormals(myQuadric, GLU_SMOOTH);
         }
 
-        double angle1 = asin(_velocity[0]) * 180.0 / M_PI;
-        double angle2 = asin(_velocity[1]) * 180.0 / M_PI;
-        //double angle3 = asin(_velocity[2]) * 180.0 / M_PI;
+        double angle1 = asin(_velocity.at(0)) * 180.0 / M_PI;
+        double angle2 = asin(_velocity.at(1)) * 180.0 / M_PI;
+        //double angle3 = asin(_velocity.at(2)) * 180.0 / M_PI;
 
 
         glRotatef(-angle1, 0, 1, 0);

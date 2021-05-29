@@ -9,7 +9,7 @@
 #endif
 
 #include "PARTICLE.h"
-#include "VEC3D.h"
+#include "VEC3.h"
 
 class WALL
 {

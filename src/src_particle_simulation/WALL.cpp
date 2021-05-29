@@ -19,12 +19,12 @@ void WALL::draw()
 {
     glPushMatrix();
     // translate to the point
-    glTranslated(_point[0], _point[1], _point[2]);
+    glTranslated(_point.at(0), _point.at(1), _point.at(2));
 
     // apply a rotation
-    double angle1 = asin(_normal[0]) / (2 * M_PI) * 360.0;
-    double angle2 = asin(_normal[1]) / (2 * M_PI) * 360.0;
-    //double angle3 = asin(_normal[2]) / (2 * M_PI) * 360.0;
+    double angle1 = asin(_normal.at(0)) / (2 * M_PI) * 360.0;
+    double angle2 = asin(_normal.at(1)) / (2 * M_PI) * 360.0;
+    //double angle3 = asin(_normal.at(2)) / (2 * M_PI) * 360.0;
 
 
     glRotatef(-angle1, 0, 1, 0);
