@@ -17,6 +17,10 @@ public:
     static bool isSurfaceVisible;
     static bool showArrows;
 
+    PARTICLE(const PARTICLE&) = default;
+    PARTICLE(PARTICLE&&) = default;
+    PARTICLE& operator=(const PARTICLE&) = default;
+    PARTICLE& operator=(PARTICLE&&) = default;
     //static unsigned int count;
     PARTICLE();
     PARTICLE(const VEC3D& position);
