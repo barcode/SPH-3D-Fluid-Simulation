@@ -150,6 +150,16 @@ void keyboardCallback(unsigned char key, int x, int y)
             particleSystem->toggleGridVisble();
             break;
 
+        case '=':
+            particleSystem->SURFACE_THRESHOLD += 0.1;
+            std::cout << "surface threshold: " << particleSystem->SURFACE_THRESHOLD << std::endl;
+            break;
+
+        case '-':
+            particleSystem->SURFACE_THRESHOLD -= 0.1;
+            std::cout << "surface threshold: " << particleSystem->SURFACE_THRESHOLD << std::endl;
+            break;
+
         case 's':
             particleSystem->toggleSurfaceVisible();
             break;
@@ -234,6 +244,7 @@ int main(int argc, char** argv)
 {
     //set up scenarios
     {
+        static constexpr double h = 0.0457; //0.02 //0.045
         //dam
         {
             scenario_dam.name = "dam";
