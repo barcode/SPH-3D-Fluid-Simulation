@@ -67,7 +67,6 @@ void qt_sim_window::timerEvent(QTimerEvent*)
     
     if(sim)
     {
-        sim->_use_brute = ui->checkBox_brute->isChecked();
         sim->_particle_system->surfaceThreshold = ui->doubleSpinBox_surf_thresh->value();
 
         const auto diodes_active = ui->checkBox_active_diodes->isChecked();

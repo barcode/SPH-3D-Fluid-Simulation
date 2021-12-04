@@ -6,8 +6,6 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#define BRUTE1
-
 #include <cstdlib>
 #include <sys/time.h>
 
@@ -144,18 +142,12 @@ void keyboardCallback(unsigned char key, int x, int y)
             break;
 
         case ' ':
-#ifdef BRUTE
-            particleSystem->stepVerletBrute(dt);
-#else
             particleSystem->stepVerlet(dt);
-#endif
             glutPostRedisplay();
             break;
 
         case 'g':
-#ifndef BRUTE
             particleSystem->toggleGridVisble();
-#endif
             break;
 
         case '=':
@@ -232,16 +224,12 @@ void idleCallback()
     {
         return;
     }
-#ifdef BRUTE
-    particleSystem->stepVerletBrute(dt);
-#else
     if (iterationCount == 0)
     {
         arUtilTimerReset();
     }
     particleSystem->stepVerlet(dt);
     iterationCount++;
-#endif
 
     glutPostRedisplay();
 }

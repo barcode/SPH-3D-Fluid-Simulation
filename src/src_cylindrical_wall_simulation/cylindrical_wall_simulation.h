@@ -45,5 +45,4 @@ public:
      
      std::unique_ptr<PARTICLE_SYSTEM> _particle_system;
      std::unique_ptr<SCENARIO> _scenario;
-     bool _use_brute=false;
 };

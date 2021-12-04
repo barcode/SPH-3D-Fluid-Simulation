@@ -36,12 +36,7 @@ void PARTICLE_SYSTEM::loadScenario(const SCENARIO& s)
 
 void PARTICLE_SYSTEM::addParticle(const VEC3D& position, const VEC3D& velocity)
 {
-
-#ifdef BRUTE
-    _particles.push_back(PARTICLE(position, velocity));
-#else
     (*grid)(0, 0, 0).push_back(PARTICLE(position, velocity));
-#endif
 }
 
 void PARTICLE_SYSTEM::addParticle(const VEC3D& position)
@@ -183,15 +178,6 @@ void PARTICLE_SYSTEM::draw()
     //for (unsigned int x = 0; x < _particles.size(); x++)
     //  _particles.at(x).draw();
 
-#ifdef BRUTE
-
-    for (unsigned int x = 0; x < _particles.size(); x++)
-    {
-        _particles.at(x).draw();
-    }
-
-#else
-
     for (int gridCellIndex = 0; gridCellIndex < (*grid).cellCount(); gridCellIndex++)
     {
 
@@ -234,8 +220,6 @@ void PARTICLE_SYSTEM::draw()
             }
         }
     }
-
-#endif
 
     glColor3fv(greyColor.data());
 
@@ -284,27 +268,6 @@ void PARTICLE_SYSTEM::stepVerlet(double dt)
 ///////////////////////////////////////////////////////////////////////////////
 // Verlet integration
 ///////////////////////////////////////////////////////////////////////////////
-void PARTICLE_SYSTEM::stepVerletBrute(double dt)
-{
-    if (_scenario.particles.generator)
-    {
-        _scenario.particles.generator(*this);
-    }
-
-    calculateAccelerationBrute();
-
-    for (unsigned int i = 0; i < PARTICLE::count; i++)
-    {
-        PARTICLE& particle = _particles.at(i);
-
-        VEC3D newPosition = particle.position() + particle.velocity() * dt + particle.acceleration() * dt * dt;
-        VEC3D newVelocity = (newPosition - particle.position()) / dt;
-
-        particle.position() = newPosition;
-        particle.velocity() = newVelocity;
-    }
-    _iteration++;
-}
 
 /*
  Calculate the acceleration of each particle using a grid optimized approach.
@@ -617,142 +580,6 @@ double PARTICLE_SYSTEM::WviscosityLaplacian(double radiusSquared)
 
     return coefficient * (h - radius);
 }
-
-/*
- Calculate the acceleration of every particle in a brute force manner (n^2).
- Used for debugging.
-*/
-void PARTICLE_SYSTEM::calculateAccelerationBrute()
-{
-
-    ///////////////////
-    // STEP 1: UPDATE DENSITY & PRESSURE OF EACH PARTICLE
-
-    for (int i = 0; i < PARTICLE::count; i++)
-    {
-
-        // grab ith particle reference
-
-        PARTICLE& particle = _particles.at(i);
-
-        // now iteratate through neighbors
-
-        particle.density() = 0.0;
-
-        for (int j = 0; j < PARTICLE::count; j++)
-        {
-
-            PARTICLE& neighborParticle = _particles.at(j);
-
-            VEC3D diffPosition = particle.position() - neighborParticle.position();
-
-            double radiusSquared = diffPosition.dot(diffPosition);
-
-            if (radiusSquared <= h * h)
-            {
-                particle.density() += Wpoly6(radiusSquared);
-            }
-        }
-
-        particle.density() *= PARTICLE_MASS;
-
-        // p = k(density - density_rest)
-
-        particle.pressure() = GAS_STIFFNESS * (particle.density() - REST_DENSITY);
-
-        //totalDensity += particle.density();
-    }
-
-    ///////////////////
-    // STEP 2: COMPUTE FORCES FOR ALL PARTICLES
-
-    for (int i = 0; i < PARTICLE::count; i++)
-    {
-
-        PARTICLE& particle = _particles.at(i);
-
-        //std::cout << "particle id: " << particle.id() << std::endl;
-
-        VEC3D f_pressure,
-              f_viscosity,
-              f_surface,
-              f_gravity(0.0, particle.density() * -9.80665, 0.0),
-              n,
-              colorFieldNormal,
-              colorFieldLaplacian; // n is gradient of colorfield
-        //double n_mag;
-
-        for (int j = 0; j < PARTICLE::count; j++)
-        {
-            PARTICLE& neighbor = _particles.at(j);
-
-            VEC3D diffPosition = particle.position() - neighbor.position();
-            VEC3D diffPositionNormalized = diffPosition.normal(); // need?
-            double radiusSquared = diffPosition.dot(diffPosition);
-
-            if (radiusSquared <= h * h)
-            {
-
-
-                if (radiusSquared > 0.0)
-                {
-
-                    //neighborsVisited++;
-                    //std::cout << neighborsVisited << std::endl;
-
-                    //std::cout << neighbor.id() << std::endl;
-
-                    VEC3D gradient;
-
-                    Wpoly6Gradient(diffPosition, radiusSquared, gradient);
-
-                    f_pressure += (particle.pressure() + neighbor.pressure()) / (2.0 * neighbor.density()) * gradient;
-
-                    colorFieldNormal += gradient / neighbor.density();
-                }
-
-                f_viscosity += (neighbor.velocity() - particle.velocity()) * WviscosityLaplacian(radiusSquared) / neighbor.density();
-
-                colorFieldLaplacian += Wpoly6Laplacian(radiusSquared) / neighbor.density();
-            }
-        }
-
-        f_pressure *= -PARTICLE_MASS;
-
-        //totalPressure += f_pressure;
-
-        f_viscosity *= VISCOSITY * PARTICLE_MASS;
-
-        colorFieldNormal *= PARTICLE_MASS;
-
-        particle.normal = -1.0 * colorFieldNormal;
-
-        colorFieldLaplacian *= PARTICLE_MASS;
-
-        // surface tension force
-
-        double colorFieldNormalMagnitude = colorFieldNormal.magnitude();
-
-        if (colorFieldNormalMagnitude > surfaceThreshold)
-        {
-            particle.flag() = true;
-            f_surface = -SURFACE_TENSION * colorFieldLaplacian * colorFieldNormal / colorFieldNormalMagnitude;
-        }
-        else
-        {
-            particle.flag() = false;
-        }
-
-        // ADD IN SPH FORCES
-        particle.acceleration() = (f_pressure + f_viscosity + f_surface + f_gravity) / particle.density();
-
-        // EXTERNAL FORCES HERE (USER INTERACTION, SWIRL)
-        VEC3D f_collision;
-
-        collisionForce(particle, f_collision);
-    }
-}
-
 
 void SCENARIO::generate_box_walls()
 {

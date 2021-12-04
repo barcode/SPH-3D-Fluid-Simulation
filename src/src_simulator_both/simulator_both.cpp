@@ -145,9 +145,7 @@ void keyboardCallback(unsigned char key, int x, int y)
             break;
 
         case 'g':
-#ifndef BRUTE
             window->sim->_particle_system->toggleGridVisble();
-#endif
             break;
 
         case 's':

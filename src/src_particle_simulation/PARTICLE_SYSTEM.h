@@ -67,15 +67,9 @@ public:
 
     void stepVerlet(double dt);
 
-    void stepVerletBrute(double dt);
-
     void calculateAcceleration();
 
-    void calculateAccelerationBrute();
-
     void collisionForce(PARTICLE& particle, VEC3D& f_collision);
-
-    void getNeighborParticles(std::vector<PARTICLE>& totalNeighborParticles, int x, int y, int z);
 
     double Wpoly6(double radiusSquared);
 

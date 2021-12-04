@@ -154,14 +154,7 @@ void cylindrical_wall_simulation::gravity(double x, double y, double z)
 void cylindrical_wall_simulation::step(
             double dt)
 {
-    if(_use_brute)
-    {
-        _particle_system->stepVerletBrute(dt);
-    }
-    else
-    {
-        _particle_system->stepVerlet(dt);
-    }
+    _particle_system->stepVerlet(dt);
 }
 
 void cylindrical_wall_simulation::visit_particles(const std::function<void (int, const PARTICLE &)> &callback)
