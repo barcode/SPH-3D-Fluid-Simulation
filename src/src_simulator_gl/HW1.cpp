@@ -172,6 +172,10 @@ void keyboardCallback(unsigned char key, int x, int y)
             particleSystem->toggleTumble();
             break;
 
+        case 'z':
+            particleSystem->toggleArrows();
+            break;
+
         case '1':
             particleSystem->loadScenario(scenario_dam);
             break;
