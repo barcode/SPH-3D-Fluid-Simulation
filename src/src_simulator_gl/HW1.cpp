@@ -150,16 +150,6 @@ void keyboardCallback(unsigned char key, int x, int y)
             particleSystem->toggleGridVisble();
             break;
 
-        case '=':
-            particleSystem->surfaceThreshold += 0.1;
-            std::cout << "surface threshold: " << particleSystem->surfaceThreshold << std::endl;
-            break;
-
-        case '-':
-            particleSystem->surfaceThreshold -= 0.1;
-            std::cout << "surface threshold: " << particleSystem->surfaceThreshold << std::endl;
-            break;
-
         case 's':
             particleSystem->toggleSurfaceVisible();
             break;

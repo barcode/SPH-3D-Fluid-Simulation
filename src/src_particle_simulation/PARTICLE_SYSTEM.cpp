@@ -4,7 +4,7 @@
 // Constructor
 ///////////////////////////////////////////////////////////////////////////////
 PARTICLE_SYSTEM::PARTICLE_SYSTEM(const SCENARIO& s) :
-    _isGridVisible(false), surfaceThreshold(0.01), gravityVector(0.0, GRAVITY_ACCELERATION, 0.0), grid(NULL)
+    _isGridVisible(false), gravityVector(0.0, GRAVITY_ACCELERATION, 0.0), grid(NULL)
 {
     loadScenario(s);
 }
