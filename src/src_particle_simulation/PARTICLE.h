@@ -31,18 +31,9 @@ public:
     void draw();
 
     // clear all previous accumulated forces
-    void clearForce()
-    {
-        _force *= 0;
-    }
 
     // accumulate forces
-    void addForce(VEC3D newForce)
-    {
-        _force += newForce;
-    }
 
-    void calculateAcceleration();
 
     // accessors
     VEC3D& position()
@@ -60,10 +51,6 @@ public:
     VEC3D& acceleration()
     {
         return _acceleration;
-    }
-    VEC3D& force()
-    {
-        return _force;
     }
     double& density()
     {
@@ -94,7 +81,6 @@ public:
 private:
     VEC3D _position;
     VEC3D _velocity;
-    VEC3D _force;
     VEC3D _acceleration;
     double _density;
     double _pressure;
