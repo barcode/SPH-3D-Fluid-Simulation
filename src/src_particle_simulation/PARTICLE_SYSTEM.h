@@ -103,6 +103,10 @@ public:
     VEC3D gravityVector;
     double particle_r = 0.01;
 
+    unsigned int num_particles() const
+    {
+        return _num_particles;
+    }
 private:
     // list of particles, walls, and springs being simulated
     SCENARIO _scenario;
@@ -110,6 +114,6 @@ private:
     //unsigned int _particleCount;
     bool _isGridVisible;
     bool _tumble;
-
     unsigned int _iteration = 0;
+    unsigned int _num_particles = 0;
 };

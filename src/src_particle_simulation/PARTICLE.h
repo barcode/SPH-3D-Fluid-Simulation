@@ -89,7 +89,7 @@ public:
 
     void clearParameters();
 
-    static unsigned int count;
+    //static unsigned int count;
 
 private:
     VEC3D _position;
@@ -99,6 +99,6 @@ private:
     double _density;
     double _pressure;
     bool _flag;
-    int _id;
-    GLUquadricObj* myQuadric;
+    int _id = 0;
+    GLUquadricObj* myQuadric = nullptr;
 };

@@ -13,7 +13,6 @@ int count = 0;
 
 bool PARTICLE::isSurfaceVisible = false;
 bool PARTICLE::showArrows = false;
-unsigned int PARTICLE::count = 0;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Constructor
@@ -26,15 +25,11 @@ PARTICLE::PARTICLE()
 PARTICLE::PARTICLE(const VEC3D& position) :
     _position(position)
 {
-    myQuadric = NULL;
-    _id = count++;
 }
 
 PARTICLE::PARTICLE(const VEC3D& position, const VEC3D& velocity) :
     _position(position), _velocity(velocity)
 {
-    myQuadric = NULL;
-    _id = count++;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -285,7 +285,7 @@ int main(int argc, char** argv)
 
             scenario_faucet.particles.generator = [](auto & sys)
             {
-                if (PARTICLE::count < 3000)
+                if (sys.num_particles() < 1500)
                 {
                     VEC3D initialVelocity(-1.8, -1.8, 0);
 
@@ -298,6 +298,7 @@ int main(int argc, char** argv)
 
                     sys.addParticle(VEC3D(sx / 2.0 - h / 2.0, sy + h * -0.3, h * 0.6), initialVelocity);
                     sys.addParticle(VEC3D(sx / 2.0 - h / 2.0, sy + h * -0.3, h * -0.6), initialVelocity);
+                    std::cout << "#particles = " << sys.num_particles() << "\n";
                 }
             };
         }

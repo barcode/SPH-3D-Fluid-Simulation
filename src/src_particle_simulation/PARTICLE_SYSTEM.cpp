@@ -18,25 +18,34 @@ void PARTICLE_SYSTEM::loadScenario(const SCENARIO& s)
     }
 
     // reset params
-    PARTICLE::count = 0;
     _iteration = 0;
     _scenario = s;
     int gridXRes = (int)ceil(_scenario.boxSize.x / h);
     int gridYRes = (int)ceil(_scenario.boxSize.y / h);
     int gridZRes = (int)ceil(_scenario.boxSize.z / h);
     grid = new FIELD_3D(gridXRes, gridYRes, gridZRes);
-    (*grid)(0, 0, 0) = s.particles.initial;
 
-    std::cout << "Loaded '" << s.name << "' scenario" << std::endl;
+    for(std::size_t i = 0; i < _scenario.particles.initial.size();++i)
+    {
+        _scenario.particles.initial.at(i).id() = i;
+    }
+    _num_particles = _scenario.particles.initial.size();
+
+    (*grid)(0, 0, 0) = _scenario.particles.initial;
+
+    std::cout << "Loaded '" << _scenario.name << "' scenario" << std::endl;
     std::cout << "Grid size is " << (*grid).xRes() << "x" << (*grid).yRes() << "x" << (*grid).zRes() << std::endl;
-    std::cout << "Simulating " << PARTICLE::count << " particles" << std::endl;
+    std::cout << "Simulating " << num_particles() << " particles" << std::endl;
 
     updateGrid();
 }
 
 void PARTICLE_SYSTEM::addParticle(const VEC3D& position, const VEC3D& velocity)
 {
-    (*grid)(0, 0, 0).push_back(PARTICLE(position, velocity));
+    PARTICLE p(position, velocity);
+    p.id() = _num_particles;
+    (*grid)(0, 0, 0).emplace_back(std::move(p));
+    ++_num_particles;
 }
 
 void PARTICLE_SYSTEM::addParticle(const VEC3D& position)
