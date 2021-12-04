@@ -108,6 +108,7 @@ public:
     FIELD_3D* grid;
     double surfaceThreshold;
     VEC3D gravityVector;
+    double particle_r = 0.01;
 
 private:
     // list of particles, walls, and springs being simulated

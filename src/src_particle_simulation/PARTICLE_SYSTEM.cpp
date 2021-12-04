@@ -549,7 +549,7 @@ void PARTICLE_SYSTEM::collisionForce(PARTICLE& particle, VEC3D& f_collision)
 {
     const auto collide = [&](const auto & obj)
     {
-        const auto [d, normal] = obj.collide(particle, 0.01); // particle radius
+        const auto [d, normal] = obj.collide(particle, particle_r); // particle radius
         if (d > 0.0)
         {
             // This is an alernate way of calculating collisions of particles against walls, but produces some jitter at boundaries
