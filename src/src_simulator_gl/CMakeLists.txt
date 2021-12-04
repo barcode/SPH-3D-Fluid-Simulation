@@ -1,0 +1,2 @@
+add_executable(simulator_gl HW1.cpp)
+target_link_libraries(simulator_gl particle_simulation)

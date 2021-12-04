@@ -377,13 +377,13 @@ int main(int argc, char** argv)
                 VEC3D(0, scenario_flask_wall.boxSize.y / 2.0, 0));
             //outer
             scenario_flask_wall.collision.cylindrical_walls.emplace_back(
-                VEC3D(0, -scenario_flask_wall.boxSize.y / 2.0, 0),
+                VEC3D(0, 0, 0),
                 VEC3D(0, 1, 0),
                 scenario_flask_wall.boxSize.x / 2,
                 true);
             //inner
             scenario_flask_wall.collision.cylindrical_walls.emplace_back(
-                VEC3D(0, -scenario_flask_wall.boxSize.y / 2.0, 0),
+                VEC3D(0, 0, 0),
                 VEC3D(0, 1, 0),
                 scenario_flask_wall.boxSize.x / 4,
                 false);
