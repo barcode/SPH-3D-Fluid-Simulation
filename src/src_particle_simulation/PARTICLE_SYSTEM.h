@@ -29,8 +29,8 @@ class PARTICLE_SYSTEM;
 
 struct SCENARIO
 {
-    std::string           name;
-    VEC3D                 boxSize;
+    std::string           name="default";
+    VEC3D                 boxSize{1,1,1};
 
     struct PARTICLES
     {
