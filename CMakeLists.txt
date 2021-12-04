@@ -15,4 +15,5 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 #add subdirs
 add_subdirectory(src/src_glvu)
 add_subdirectory(src/src_particle_simulation)
+add_subdirectory(src/src_cylindrical_wall_simulation)
 add_subdirectory(src/src_simulator_gl)
