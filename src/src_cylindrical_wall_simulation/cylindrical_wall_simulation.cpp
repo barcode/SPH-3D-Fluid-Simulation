@@ -79,70 +79,83 @@ cylindrical_wall_simulation::cylindrical_wall_simulation(
         double height,
         double radius_particle,
         std::size_t particle_count
-) :
-    _radius_inner{radius_inner},
-    _radius_outer{radius_outer},
-    _height{height}
+)
 {
-    if(_radius_inner < 0)
-    {
-        throw std::invalid_argument{"inner radius < 0"};
-    }
-    if(_radius_inner >= _radius_outer)
-    {
-        throw std::invalid_argument{"inner radius >= outer radius"};
-    }
-    if(radius_particle <= 0)
-    {
-        throw std::invalid_argument{"particle radius <= 0"};
-    }
-    if(_height <= 0)
-    {
-        throw std::invalid_argument{"height <= 0"};
-    }
-    _scenario = std::make_unique<SCENARIO>();
-    auto& scenario_flask_wall = *_scenario;
-    scenario_flask_wall.name = "flask_wall";
-    scenario_flask_wall.boxSize.x = 2*radius_outer;
-    scenario_flask_wall.boxSize.y = height;
-    scenario_flask_wall.boxSize.z = 2*radius_outer;
-    
-    // bottom
-    scenario_flask_wall.collision.walls.emplace_back(
-        VEC3D(0, 1, 0),
-        VEC3D(0, 0, 0));
-    // top
-    scenario_flask_wall.collision.walls.emplace_back(
-        VEC3D(0, -1, 0),
-        VEC3D(0, height, 0));
-    //outer
-    scenario_flask_wall.collision.cylindrical_walls.emplace_back(
-        VEC3D(0, 0, 0), // center
-        VEC3D(0, 1, 0), // up
-        radius_outer,   // r
-        true);          //contain
-    //inner
-    scenario_flask_wall.collision.cylindrical_walls.emplace_back(
-        VEC3D(0, 0, 0), // center
-        VEC3D(0, 1, 0), // up
-        radius_inner,   // r
-        false);         //contain
-    
-    std::mt19937_64 gen{std::random_device{}()};
-    std::uniform_real_distribution<double> d{0,1};
-    for(;particle_count;--particle_count)
-    {
-        const auto avgr = (_radius_inner + _radius_outer) /2;
-        const auto angle =d(gen) * M_PI * 2;
-        const auto x = std::sin(angle)*avgr;
-        const auto z = std::cos(angle)*avgr;
-        const auto y = _height * 0.1 + d(gen) * 0.8 * _height;
-        scenario_flask_wall.particles.initial.push_back(PARTICLE(VEC3D(x, y, z)));
-    }
-    _particle_system = std::make_unique<PARTICLE_SYSTEM>(*_scenario);
-    _particle_system->particle_r = radius_particle;
+    _particle_system = std::make_unique<PARTICLE_SYSTEM>(SCENARIO{});
+    reset(radius_inner, radius_outer, height, radius_particle, particle_count);
 }
 
+    
+    void cylindrical_wall_simulation::reset(
+                double radius_inner, 
+                double radius_outer, 
+                double height,
+                double radius_particle,
+                std::size_t particle_count
+        )
+    {
+        if(radius_inner < 0)
+        {
+            throw std::invalid_argument{"inner radius < 0"};
+        }
+        if(radius_inner >= radius_outer)
+        {
+            throw std::invalid_argument{"inner radius >= outer radius"};
+        }
+        if(radius_particle <= 0)
+        {
+            throw std::invalid_argument{"particle radius <= 0"};
+        }
+        if(height <= 0)
+        {
+            throw std::invalid_argument{"height <= 0"};
+        }
+        _radius_inner=radius_inner;
+        _radius_outer=radius_outer;
+        _height=height;
+        SCENARIO scenario_flask_wall;
+        scenario_flask_wall.name = "flask_wall";
+        scenario_flask_wall.boxSize.x = 2*radius_outer;
+        scenario_flask_wall.boxSize.y = height;
+        scenario_flask_wall.boxSize.z = 2*radius_outer;
+        
+        // bottom
+        scenario_flask_wall.collision.walls.emplace_back(
+            VEC3D(0, 1, 0),
+            VEC3D(0, 0, 0));
+        // top
+        scenario_flask_wall.collision.walls.emplace_back(
+            VEC3D(0, -1, 0),
+            VEC3D(0, height, 0));
+        //outer
+        scenario_flask_wall.collision.cylindrical_walls.emplace_back(
+            VEC3D(0, 0, 0), // center
+            VEC3D(0, 1, 0), // up
+            radius_outer,   // r
+            true);          //contain
+        //inner
+        scenario_flask_wall.collision.cylindrical_walls.emplace_back(
+            VEC3D(0, 0, 0), // center
+            VEC3D(0, 1, 0), // up
+            radius_inner,   // r
+            false);         //contain
+        
+        std::mt19937_64 gen{std::random_device{}()};
+        std::uniform_real_distribution<double> d{0,1};
+        for(;particle_count;--particle_count)
+        {
+            const auto avgr = (_radius_inner + _radius_outer) /2;
+            const auto angle =d(gen) * M_PI * 2;
+            const auto x = std::sin(angle)*avgr;
+            const auto z = std::cos(angle)*avgr;
+            const auto y = _height * 0.1 + d(gen) * 0.8 * _height;
+            scenario_flask_wall.particles.initial.push_back(PARTICLE(VEC3D(x, y, z)));
+        }
+        _particle_system->particle_r = radius_particle;
+        _particle_system->loadScenario(scenario_flask_wall);
+        
+    }
+    
     
 void cylindrical_wall_simulation::gravity(double x, double y, double z)
 {

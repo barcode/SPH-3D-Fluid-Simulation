@@ -25,7 +25,7 @@ struct diode_grid
 
 class cylindrical_wall_simulation
 {
-public:
+public:    
     cylindrical_wall_simulation(
             double radius_inner, 
             double radius_outer, 
@@ -33,6 +33,13 @@ public:
             double radius_particle,
             std::size_t particle_count
     );
+    void reset(
+                double radius_inner, 
+                double radius_outer, 
+                double height,
+                double radius_particle,
+                std::size_t particle_count
+        );
     
     void gravity(double x, double y, double z);
     void step(double dt);    
@@ -44,5 +51,4 @@ public:
     double _height;
      
      std::unique_ptr<PARTICLE_SYSTEM> _particle_system;
-     std::unique_ptr<SCENARIO> _scenario;
 };
