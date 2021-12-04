@@ -1,0 +1,2 @@
+add_executable(simulator_both simulator_both.cpp)
+target_link_libraries(simulator_both simulator_qt_widget)
