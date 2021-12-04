@@ -106,7 +106,6 @@ public:
 
 private:
     // list of particles, walls, and springs being simulated
-    std::vector<PARTICLE> _particles;
     SCENARIO _scenario;
 
     //unsigned int _particleCount;

@@ -175,9 +175,6 @@ void PARTICLE_SYSTEM::draw()
     glMaterialfv(GL_FRONT, GL_SPECULAR, whiteColor.data());
     glMaterialfv(GL_FRONT, GL_SHININESS, &shininess);
 
-    //for (unsigned int x = 0; x < _particles.size(); x++)
-    //  _particles.at(x).draw();
-
     for (int gridCellIndex = 0; gridCellIndex < (*grid).cellCount(); gridCellIndex++)
     {
 
