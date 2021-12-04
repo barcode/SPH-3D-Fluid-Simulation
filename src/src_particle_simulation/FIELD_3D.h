@@ -42,6 +42,10 @@ public:
     {
         return _data;
     }
+    const std::vector<particleVector>& data() const
+    {
+        return _data;
+    }
 
 private:
 

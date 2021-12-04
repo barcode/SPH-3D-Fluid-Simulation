@@ -77,6 +77,10 @@ public:
     {
         return _id;
     }
+    int id() const
+    {
+        return _id;
+    }
     VEC3D normal;
 
     void clearParameters();
