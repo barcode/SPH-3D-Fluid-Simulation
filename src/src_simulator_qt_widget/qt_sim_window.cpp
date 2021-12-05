@@ -32,11 +32,16 @@ qt_sim_window::qt_sim_window(QWidget *parent) :
 
     // manipulator
     manipulator = new Qt3DExtras::QOrbitCameraController(scene);
-    manipulator->setLinearSpeed(0.f);
+    manipulator->setLinearSpeed(10.f);
     manipulator->setLookSpeed(180.f);
     manipulator->setCamera(camera);
     
-     material = new Qt3DExtras::QPhongMaterial(scene);
+    material_sphere = new Qt3DExtras::QPhongMaterial(scene);
+    material_sphere->setAmbient(QColor{100,100,100});
+
+    material_other = new Qt3DExtras::QPhongAlphaMaterial(scene);
+    material_other->setAmbient(QColor{0,0,100,50});
+    material_other->setAlpha(0.4);
     
     view->setRootEntity(scene);
     
@@ -58,16 +63,31 @@ qt_sim_window::~qt_sim_window()
 
 void qt_sim_window::timerEvent(QTimerEvent*)
 {
+    camera->setViewCenter({0,0,0});
+    
     const auto timer_start= now();
     double dt_since_last = dt_ms(timer_last_End, timer_start);
     double dt_step = 0;
     double dt_diodes_image = 0;
     double dt_update_spheres = 0;
     double dt_update_light = 0;
+    std::size_t npart_visited = 0;
     
     if(sim)
     {
+        sim->_catch_escaped_particles = ui->checkBox_catch_parts->isChecked();
+        
         sim->_particle_system->SURFACE_THRESHOLD = ui->doubleSpinBox_surf_thresh->value();
+        
+        sim->_particle_system->GAS_STIFFNESS    = ui->doubleSpinBox_GAS_STIFFNESS   ->value();
+        sim->_particle_system->REST_DENSITY     = ui->doubleSpinBox_REST_DENSITY    ->value();
+        sim->_particle_system->PARTICLE_MASS    = ui->doubleSpinBox_PARTICLE_MASS   ->value();
+        sim->_particle_system->VISCOSITY        = ui->doubleSpinBox_VISCOSITY       ->value();
+        sim->_particle_system->SURFACE_TENSION  = ui->doubleSpinBox_SURFACE_TENSION ->value();
+        sim->_particle_system->KERNEL_PARTICLES = ui->doubleSpinBox_KERNEL_PARTICLES->value();
+        sim->_particle_system->WALL_K           = ui->doubleSpinBox_WALL_K          ->value();
+        sim->_particle_system->WALL_DAMPING     = ui->doubleSpinBox_WALL_DAMPING    ->value();
+        
         const auto diodes_active = ui->checkBox_active_diodes->isChecked();
         if(diodes_active)
         {
@@ -90,6 +110,7 @@ void qt_sim_window::timerEvent(QTimerEvent*)
         }
         sim->visit_particles([&](int idx, const auto& part)
         {
+            ++npart_visited;
             const auto& p = part.position();
             //update pos
             {
@@ -147,30 +168,100 @@ void qt_sim_window::step()
 
 void qt_sim_window::reset_sim()
 {
-    for(auto* sp : spheres)
+    for(auto* sp : elements)
     {
         sp->~QEntity();
     }
-    spheres.clear();
+    elements.clear();
     transforms.clear();
     sim.reset();
     const auto npart = static_cast<std::size_t>(ui->spinBox_npart->value());
     const auto rpart = ui->doubleSpinBox_r_part->value();
+    const auto rinner = ui->doubleSpinBox_r_inner->value();
+    const auto router = ui->doubleSpinBox_r_outer->value();
+    const auto height = ui->doubleSpinBox_h->value();
     std::cout << "npart " << npart << "\n";
     std::cout << "rpart " << rpart << "\n";
     sim = std::make_unique<cylindrical_wall_simulation>(
-                std::min(ui->doubleSpinBox_r_inner->value(), 
-                ui->doubleSpinBox_r_outer->value()),
-                std::max(ui->doubleSpinBox_r_inner->value(), 
-                ui->doubleSpinBox_r_outer->value())+0.01, 
-                ui->doubleSpinBox_h->value(),
+                std::min(rinner, router),
+                std::max(rinner, router)+0.01, 
+                height,
                 rpart,
                 npart);
     
+    //base plane
+    if(ui->checkBox_vis_plane->isChecked())
+    {
+        Qt3DCore::QEntity* entity = new Qt3DCore::QEntity(scene);
+        elements.emplace_back(entity);
+        
+        auto* mesh = new Qt3DExtras::QPlaneMesh;
+        mesh->setHeight(2);
+        mesh->setWidth(2);
+        mesh->setMirrored(false);
+        entity->addComponent(mesh);
+        Qt3DCore::QTransform* transform = new Qt3DCore::QTransform;
+        
+        entity->addComponent(transform);
+        entity->addComponent(material_other);
+    }
+    //base plane
+    if(ui->checkBox_vis_plane->isChecked())
+    {
+        Qt3DCore::QEntity* entity = new Qt3DCore::QEntity(scene);
+        elements.emplace_back(entity);
+        
+        auto* mesh = new Qt3DExtras::QPlaneMesh;
+        mesh->setHeight(2);
+        mesh->setWidth(2);
+        mesh->setMirrored(true);
+        entity->addComponent(mesh);
+        Qt3DCore::QTransform* transform = new Qt3DCore::QTransform;
+        
+        entity->addComponent(transform);
+        entity->addComponent(material_other);
+    }
+    //cyl outer
+    if(ui->checkBox_vis_outer->isChecked())
+    {
+        Qt3DCore::QEntity* entity = new Qt3DCore::QEntity(scene);
+        elements.emplace_back(entity);
+        
+        auto* mesh = new Qt3DExtras::QCylinderMesh;
+        mesh->setSlices(20);
+        mesh->setRings(3);
+        mesh->setRadius(router);
+        mesh->setLength(height);
+        entity->addComponent(mesh);
+        Qt3DCore::QTransform* transform = new Qt3DCore::QTransform;
+        transform->setTranslation({0,static_cast<float>(height/2),0});
+        
+        entity->addComponent(transform);
+        entity->addComponent(material_other);
+    }
+    //cyl inner
+    if(ui->checkBox_vis_inner->isChecked())
+    {
+        Qt3DCore::QEntity* entity = new Qt3DCore::QEntity(scene);
+        elements.emplace_back(entity);
+        
+        auto* mesh = new Qt3DExtras::QCylinderMesh;
+        mesh->setSlices(20);
+        mesh->setRings(3);
+        mesh->setRadius(rinner);
+        mesh->setLength(height);
+        entity->addComponent(mesh);
+        Qt3DCore::QTransform* transform = new Qt3DCore::QTransform;
+        transform->setTranslation({0,static_cast<float>(height/2),0});
+        
+        entity->addComponent(transform);
+        entity->addComponent(material_other);
+    }
+    //spheres
     for(std::size_t i = 0; i < npart;++i)
     {
         Qt3DCore::QEntity* sphere = new Qt3DCore::QEntity(scene);
-        spheres.emplace_back(sphere);
+        elements.emplace_back(sphere);
         
         Qt3DExtras::QSphereMesh* mesh = new Qt3DExtras::QSphereMesh;
         mesh->setRings(20);
@@ -181,6 +272,6 @@ void qt_sim_window::reset_sim()
         transforms.emplace_back(transform);
         
         sphere->addComponent(transform);
-        sphere->addComponent(material);
+        sphere->addComponent(material_sphere);
     }
 }

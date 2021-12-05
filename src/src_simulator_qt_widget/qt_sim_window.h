@@ -22,7 +22,7 @@
 #include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DExtras/QTorusMesh>
 #include <Qt3DExtras/QOrbitCameraController>
-#include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DExtras/QPhongAlphaMaterial>
 
 
 #include "cylindrical_wall_simulation.h"
@@ -69,8 +69,9 @@ public:
     Qt3DCore::QEntity* scene;
     Qt3DRender::QCamera *camera;
     Qt3DExtras::QOrbitCameraController* manipulator;
-    Qt3DRender::QMaterial* material;
-    std::vector<Qt3DCore::QEntity*> spheres;
+    Qt3DExtras::QPhongMaterial* material_sphere;
+    Qt3DExtras::QPhongAlphaMaterial* material_other;
+    std::vector<Qt3DCore::QEntity*> elements;
     std::vector<Qt3DCore::QTransform*> transforms;
     std::unique_ptr<cylindrical_wall_simulation> sim;
     
