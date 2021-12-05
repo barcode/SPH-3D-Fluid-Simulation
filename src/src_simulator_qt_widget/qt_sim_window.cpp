@@ -180,6 +180,7 @@ void qt_sim_window::reset_sim()
     const auto rinner = ui->doubleSpinBox_r_inner->value();
     const auto router = ui->doubleSpinBox_r_outer->value();
     const auto height = ui->doubleSpinBox_h->value();
+    _diode_grid.height = height;
     std::cout << "npart " << npart << "\n";
     std::cout << "rpart " << rpart << "\n";
     sim = std::make_unique<cylindrical_wall_simulation>(
