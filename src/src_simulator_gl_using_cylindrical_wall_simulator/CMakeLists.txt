@@ -1,0 +1,2 @@
+add_executable(simulator_gl_using_cylindrical_wall_simulator simulator_gl_using_cylindrical_wall_simulator.cpp)
+target_link_libraries(simulator_gl_using_cylindrical_wall_simulator cylindrical_wall_simulation)
