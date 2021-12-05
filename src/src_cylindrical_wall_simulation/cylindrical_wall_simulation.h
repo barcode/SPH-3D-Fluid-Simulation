@@ -46,9 +46,9 @@ public:
     
     void visit_particles(const std::function<void (int, const PARTICLE &)> &callback);    
 
-    double _radius_inner;
-    double _radius_outer;
-    double _height;
+    double _radius_inner=0.3;
+    double _radius_outer=0.5;
+    double _height = 1;
     bool _catch_escaped_particles = false;
      
      std::unique_ptr<PARTICLE_SYSTEM> _particle_system;
