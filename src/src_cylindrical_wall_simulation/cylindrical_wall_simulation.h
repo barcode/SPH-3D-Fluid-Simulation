@@ -49,6 +49,7 @@ public:
     double _radius_inner;
     double _radius_outer;
     double _height;
+    bool _catch_escaped_particles = false;
      
      std::unique_ptr<PARTICLE_SYSTEM> _particle_system;
 };

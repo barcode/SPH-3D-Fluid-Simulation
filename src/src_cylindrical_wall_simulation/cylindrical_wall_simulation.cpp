@@ -8,6 +8,22 @@
 
 #include "cylindrical_wall_simulation.h"
 
+double rng()
+{
+    static thread_local std::mt19937_64 gen{std::random_device{}()};
+    static thread_local std::uniform_real_distribution<double> d{0,1};
+    return d(gen);
+}
+
+VEC3D rng_pos_inside(double ri, double ro, double h)
+{
+    const auto avgr = (ri + ro) /2;
+    const auto angle =rng() * M_PI * 2;
+    const auto x = std::sin(angle)*avgr;
+    const auto z = std::cos(angle)*avgr;
+    const auto y = h * 0.1 + rng() * 0.8 * h;
+    return {x,y,z};
+}
 
 std::size_t diode_grid::index(std::size_t bin_circ, std::size_t bin_h)
 {
@@ -140,23 +156,17 @@ cylindrical_wall_simulation::cylindrical_wall_simulation(
             radius_inner,   // r
             false);         //contain
         
-        std::mt19937_64 gen{std::random_device{}()};
-        std::uniform_real_distribution<double> d{0,1};
         for(;particle_count;--particle_count)
         {
-            const auto avgr = (_radius_inner + _radius_outer) /2;
-            const auto angle =d(gen) * M_PI * 2;
-            const auto x = std::sin(angle)*avgr;
-            const auto z = std::cos(angle)*avgr;
-            const auto y = _height * 0.1 + d(gen) * 0.8 * _height;
-            scenario_flask_wall.particles.initial.push_back(PARTICLE(VEC3D(x, y, z)));
+            scenario_flask_wall.particles.initial.push_back(
+                        PARTICLE(
+                                rng_pos_inside(_radius_inner,_radius_outer,_height)
+                                                                ));
         }
         _particle_system->particle_r = radius_particle;
         _particle_system->loadScenario(scenario_flask_wall);
-        
     }
-    
-    
+
 void cylindrical_wall_simulation::gravity(double x, double y, double z)
 {
     _particle_system->gravityVector.x=x;
@@ -168,6 +178,31 @@ void cylindrical_wall_simulation::step(
             double dt)
 {
     _particle_system->stepVerlet(dt);
+    if(_catch_escaped_particles)
+    {
+        const auto ymin = -_height *0.25;
+        const auto ymax = _height *1.25;
+        const auto xzlim = _radius_outer *1.25;
+        auto& grid = *(_particle_system->grid);
+        for (int gridCellIndex = 0; gridCellIndex < grid.cellCount(); gridCellIndex++)
+        {
+            for (auto& p : grid.data().at(gridCellIndex))
+            {
+                auto& pos = p.position();
+                if(
+                    (pos.y <   ymin || pos.y >  ymax) ||
+                    (pos.x < -xzlim || pos.x > xzlim) ||
+                    (pos.z < -xzlim || pos.z > xzlim)
+                )
+                {
+                    pos = rng_pos_inside(_radius_inner,_radius_outer,_height);
+                    p.velocity().x=0;
+                    p.velocity().y=0;
+                    p.velocity().z=0;
+                }
+            }
+        }
+    }
 }
 
 void cylindrical_wall_simulation::visit_particles(const std::function<void (int, const PARTICLE &)> &callback)
