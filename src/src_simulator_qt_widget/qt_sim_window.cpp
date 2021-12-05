@@ -63,7 +63,8 @@ qt_sim_window::~qt_sim_window()
 
 void qt_sim_window::timerEvent(QTimerEvent*)
 {
-    camera->setViewCenter({0,0,0});
+    const auto height = ui->doubleSpinBox_h->value();
+    camera->setViewCenter({0,height/2,0});
     
     const auto timer_start= now();
     double dt_since_last = dt_ms(timer_last_End, timer_start);
