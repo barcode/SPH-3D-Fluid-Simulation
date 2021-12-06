@@ -15,13 +15,13 @@ qt_sim_window::qt_sim_window(QWidget *parent) :
     ui(new Ui::qt_sim_window)
 {
     ui->setupUi(this);
-    
-    
+
+
     view = new Qt3DExtras::Qt3DWindow;
     view->defaultFrameGraph()->setClearColor(QColor(QRgb(0xffffff)));
     QWidget* container = QWidget::createWindowContainer(view);
     ui->gridLayout_scene->addWidget(container);
-    
+
     scene = new Qt3DCore::QEntity;
 
     // camera
@@ -35,24 +35,24 @@ qt_sim_window::qt_sim_window(QWidget *parent) :
     manipulator->setLinearSpeed(10.f);
     manipulator->setLookSpeed(180.f);
     manipulator->setCamera(camera);
-    
+
     material_sphere = new Qt3DExtras::QPhongMaterial(scene);
     material_sphere->setAmbient(QColor{100,100,100});
 
     material_other = new Qt3DExtras::QPhongAlphaMaterial(scene);
     material_other->setAmbient(QColor{0,0,100,50});
     material_other->setAlpha(0.4);
-    
+
     view->setRootEntity(scene);
-    
-    
+
+
     reset_sim();
-    
+
     startTimer(std::chrono::milliseconds{10});
-    
+
     timer_last_End= now();
-    
-    connect(ui->pushButton_reset_sim, &QPushButton::clicked, 
+
+    connect(ui->pushButton_reset_sim, &QPushButton::clicked,
             this, &qt_sim_window::reset_sim);
 }
 
@@ -65,7 +65,7 @@ void qt_sim_window::timerEvent(QTimerEvent*)
 {
     const auto height = ui->doubleSpinBox_h->value();
     camera->setViewCenter({0,height/2,0});
-    
+
     const auto timer_start= now();
     double dt_since_last = dt_ms(timer_last_End, timer_start);
     double dt_step = 0;
@@ -73,13 +73,12 @@ void qt_sim_window::timerEvent(QTimerEvent*)
     double dt_update_spheres = 0;
     double dt_update_light = 0;
     std::size_t npart_visited = 0;
-    
+
     if(sim)
     {
         sim->_catch_escaped_particles = ui->checkBox_catch_parts->isChecked();
-        
+
         sim->_particle_system->SURFACE_THRESHOLD = ui->doubleSpinBox_surf_thresh->value();
-        
         sim->_particle_system->GAS_STIFFNESS    = ui->doubleSpinBox_GAS_STIFFNESS   ->value();
         sim->_particle_system->REST_DENSITY     = ui->doubleSpinBox_REST_DENSITY    ->value();
         sim->_particle_system->PARTICLE_MASS    = ui->doubleSpinBox_PARTICLE_MASS   ->value();
@@ -88,7 +87,7 @@ void qt_sim_window::timerEvent(QTimerEvent*)
         sim->_particle_system->KERNEL_PARTICLES = ui->doubleSpinBox_KERNEL_PARTICLES->value();
         sim->_particle_system->WALL_K           = ui->doubleSpinBox_WALL_K          ->value();
         sim->_particle_system->WALL_DAMPING     = ui->doubleSpinBox_WALL_DAMPING    ->value();
-        
+
         const auto diodes_active = ui->checkBox_active_diodes->isChecked();
         if(diodes_active)
         {
@@ -99,9 +98,9 @@ void qt_sim_window::timerEvent(QTimerEvent*)
             _diode_grid.n_radius_circ = ui->spinBox_d_rc->value();
             _diode_grid.clear_light();
         }
-        
-        sim->gravity(ui->doubleSpinBox_grav_x->value(), 
-                    ui->doubleSpinBox_grav_y->value(), 
+
+        sim->gravity(ui->doubleSpinBox_grav_x->value(),
+                    ui->doubleSpinBox_grav_y->value(),
                     ui->doubleSpinBox_grav_z->value());
         if(!no_autostep && ui->checkBox_active_sim->isChecked())
         {
@@ -130,14 +129,14 @@ void qt_sim_window::timerEvent(QTimerEvent*)
                 dt_update_light += dt_ms(add_light,now());
             }
         });
-        
+
         if(diodes_active)
         {
             const auto ds = now();
             //diodes
             QImage im(ui->spinBox_d_nc->value(), ui->spinBox_d_nh->value(), QImage::Format_Grayscale8);
             im.fill(0);
-            
+
             for(std::size_t i = 0; i < _diode_grid.diodes.size();++i)
             {
                 const int x = i % _diode_grid.n_circ;
@@ -186,24 +185,24 @@ void qt_sim_window::reset_sim()
     std::cout << "rpart " << rpart << "\n";
     sim = std::make_unique<cylindrical_wall_simulation>(
                 std::min(rinner, router),
-                std::max(rinner, router)+0.01, 
+                std::max(rinner, router)+0.01,
                 height,
                 rpart,
                 npart);
-    
+
     //base plane
     if(ui->checkBox_vis_plane->isChecked())
     {
         Qt3DCore::QEntity* entity = new Qt3DCore::QEntity(scene);
         elements.emplace_back(entity);
-        
+
         auto* mesh = new Qt3DExtras::QPlaneMesh;
         mesh->setHeight(2);
         mesh->setWidth(2);
         mesh->setMirrored(false);
         entity->addComponent(mesh);
         Qt3DCore::QTransform* transform = new Qt3DCore::QTransform;
-        
+
         entity->addComponent(transform);
         entity->addComponent(material_other);
     }
@@ -212,14 +211,14 @@ void qt_sim_window::reset_sim()
     {
         Qt3DCore::QEntity* entity = new Qt3DCore::QEntity(scene);
         elements.emplace_back(entity);
-        
+
         auto* mesh = new Qt3DExtras::QPlaneMesh;
         mesh->setHeight(2);
         mesh->setWidth(2);
         mesh->setMirrored(true);
         entity->addComponent(mesh);
         Qt3DCore::QTransform* transform = new Qt3DCore::QTransform;
-        
+
         entity->addComponent(transform);
         entity->addComponent(material_other);
     }
@@ -228,7 +227,7 @@ void qt_sim_window::reset_sim()
     {
         Qt3DCore::QEntity* entity = new Qt3DCore::QEntity(scene);
         elements.emplace_back(entity);
-        
+
         auto* mesh = new Qt3DExtras::QCylinderMesh;
         mesh->setSlices(20);
         mesh->setRings(3);
@@ -237,7 +236,7 @@ void qt_sim_window::reset_sim()
         entity->addComponent(mesh);
         Qt3DCore::QTransform* transform = new Qt3DCore::QTransform;
         transform->setTranslation({0,static_cast<float>(height/2),0});
-        
+
         entity->addComponent(transform);
         entity->addComponent(material_other);
     }
@@ -246,7 +245,7 @@ void qt_sim_window::reset_sim()
     {
         Qt3DCore::QEntity* entity = new Qt3DCore::QEntity(scene);
         elements.emplace_back(entity);
-        
+
         auto* mesh = new Qt3DExtras::QCylinderMesh;
         mesh->setSlices(20);
         mesh->setRings(3);
@@ -255,7 +254,7 @@ void qt_sim_window::reset_sim()
         entity->addComponent(mesh);
         Qt3DCore::QTransform* transform = new Qt3DCore::QTransform;
         transform->setTranslation({0,static_cast<float>(height/2),0});
-        
+
         entity->addComponent(transform);
         entity->addComponent(material_other);
     }
@@ -264,7 +263,7 @@ void qt_sim_window::reset_sim()
     {
         Qt3DCore::QEntity* sphere = new Qt3DCore::QEntity(scene);
         elements.emplace_back(sphere);
-        
+
         Qt3DExtras::QSphereMesh* mesh = new Qt3DExtras::QSphereMesh;
         mesh->setRings(20);
         mesh->setSlices(20);
@@ -272,7 +271,7 @@ void qt_sim_window::reset_sim()
         sphere->addComponent(mesh);
         Qt3DCore::QTransform* transform = new Qt3DCore::QTransform;
         transforms.emplace_back(transform);
-        
+
         sphere->addComponent(transform);
         sphere->addComponent(material_sphere);
     }

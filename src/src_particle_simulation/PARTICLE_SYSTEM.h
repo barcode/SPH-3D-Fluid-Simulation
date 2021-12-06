@@ -80,26 +80,26 @@ public:
 
     //typedef std::tr1::tuple<int,int,int> gridKey;
     //std::map<gridKey, std::vector<PARTICLE> > grid;
-    
+
     static constexpr double GRAVITY_ACCELERATION = -9.80665;
 
     FIELD_3D* grid;
     VEC3D gravityVector{0,GRAVITY_ACCELERATION,0};
     double particle_r = 0.01;
     double h = 0.0457; //0.02 //0.045
-    
+
     double GAS_STIFFNESS = 3.0; //20.0 // 461.5  // Nm/kg is gas constant of water vapor
     double REST_DENSITY = 998.29; // kg/m^3 is rest density of water particle
     double PARTICLE_MASS = 0.02; // kg
     double VISCOSITY = 3.5; // 5.0 // 0.00089 // Ns/m^2 or Pa*s viscosity of water
-    double SURFACE_TENSION = 0.0728; // N/m 
+    double SURFACE_TENSION = 0.0728; // N/m
     double SURFACE_THRESHOLD = 7.065;
     double KERNEL_PARTICLES = 20.0;
-    
-    
+
+
     double WALL_K = 10000.0; // wall spring constant
     double WALL_DAMPING = -0.9; // wall damping constant
-    
+
     double BOX_SIZE = 0.4;
 
     unsigned int num_particles() const

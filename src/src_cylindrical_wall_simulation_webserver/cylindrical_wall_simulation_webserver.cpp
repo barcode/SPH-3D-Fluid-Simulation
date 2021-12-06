@@ -39,8 +39,8 @@ std::string readfile(const std::string& name)
     return {(std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>())};
 }
 
-cylindrical_wall_simulation_webserver::sim_output::out_lights 
-cylindrical_wall_simulation_webserver::lights() const 
+cylindrical_wall_simulation_webserver::sim_output::out_lights
+cylindrical_wall_simulation_webserver::lights() const
 {
     sim_output::out_lights l;
     {
@@ -49,7 +49,7 @@ cylindrical_wall_simulation_webserver::lights() const
     }
     return l;
 }
-std::vector<VEC3D> cylindrical_wall_simulation_webserver::centers() const 
+std::vector<VEC3D> cylindrical_wall_simulation_webserver::centers() const
 {
     std::vector<VEC3D> c;
     {
@@ -84,9 +84,9 @@ void cylindrical_wall_simulation_webserver::task_sim()
                 sim_state.setup_radius_particles,
                 sim_state.setup_num_particles
     );
-    
+
     diode_grid d_grid;
-    
+
     while(true)
     {
         std::this_thread::sleep_for(std::chrono::milliseconds{10});
@@ -95,21 +95,21 @@ void cylindrical_wall_simulation_webserver::task_sim()
             const auto rinner = sim_state.setup_radius_inner .load();
             const auto router = sim_state.setup_radius_outer .load();
             sim.reset(std::min(rinner, router),
-                      std::max(rinner, router)+0.01, 
+                      std::max(rinner, router)+0.01,
                       sim_state.setup_height       ,
                       sim_state.setup_radius_particles,
                       sim_state.setup_num_particles
             );
         }
-        
-        sim.gravity(sim_state.sim_gravity_x         , 
-                     sim_state.sim_gravity_y         , 
+
+        sim.gravity(sim_state.sim_gravity_x         ,
+                     sim_state.sim_gravity_y         ,
                      sim_state.sim_gravity_z         );
-        
+
         sim._catch_escaped_particles = sim_state.sim_catch_particles   ;
-        
+
         d_grid.height = sim_state.setup_height       ;
-        
+
         sim._particle_system->GAS_STIFFNESS     = sim_state.sim_GAS_STIFFNESS     ;
         sim._particle_system->REST_DENSITY      = sim_state.sim_REST_DENSITY      ;
         sim._particle_system->PARTICLE_MASS     = sim_state.sim_PARTICLE_MASS     ;
@@ -125,7 +125,7 @@ void cylindrical_wall_simulation_webserver::task_sim()
         d_grid.brightness    = sim_state.brightness            ;
         d_grid.n_radius_circ = sim_state.light_radius_height   ;
         d_grid.n_radius_h    = sim_state.light_radius_width    ;
-        
+
         if(sim_state.sim_zero_vel.exchange(false))
         {
             sim.visit_particles_mod([&](int idx, auto& part)
@@ -157,7 +157,7 @@ void cylindrical_wall_simulation_webserver::task_sim()
             }
             catch(...)
             {
-                std::cout << "failed to add light " 
+                std::cout << "failed to add light "
                 << p.x << " / " << p.y << " / "<< p.z << "\n";
             }
         });
@@ -207,7 +207,7 @@ public:
         response_.set(http::field::content_type, "text/plain");
         beast::ostream(response_.body()) << "updated parameter to " << targ.load();
     }
-    
+
     http_connection(
             tcp::socket socket,
             cylindrical_wall_simulation_webserver* server,
@@ -270,12 +270,12 @@ private:
     {
         response_.version(request_.version());
         response_.keep_alive(false);
-        
-        response_file.version(request_.version());             
-        response_file.keep_alive(false);                       
-        
+
+        response_file.version(request_.version());
+        response_file.keep_alive(false);
+
         use_response_file = false;
-        
+
         switch(request_.method())
         {
         case http::verb::get:
@@ -305,7 +305,7 @@ private:
     void
     create_response()
     {
-        
+
         static const std::regex regex{R"(/([^?]*)(\?val=(.*))?)"};
         std::smatch match;
         const auto full_targ_sv = request_.target();
@@ -313,9 +313,9 @@ private:
         std::regex_match(full_targ,match,regex);
         const auto targ = match.str(1);
         const auto val  = match.str(3);
-        
+
         std::cout << request_.target() << " -> " << targ << " (" << val << ")\n";
-        
+
         if(targ == "time")
         {
             response_.set(http::field::content_type, "text/html");
@@ -377,10 +377,10 @@ private:
         else if(targ == "d_rh"      ) {set(val, sim_state->light_radius_height   );}
         else if(targ == "d_rw"      ) {set(val, sim_state->light_radius_width    );}
         else if(targ == "d_b2p"     ) {set(val, sim_state->d_brigh_to_pxval      );}
-        else if(targ == "params"    ) 
+        else if(targ == "params"    )
         {
             response_.set(http::field::content_type, "text/plain");
-            beast::ostream(response_.body()) 
+            beast::ostream(response_.body())
             << "{"
             << R"(      "sup_ri"    : )" << sim_state->setup_radius_inner    .load()
             << R"(    , "sup_ro"    : )" << sim_state->setup_radius_outer    .load()
@@ -423,7 +423,7 @@ private:
                           << " (shold have " << l.lights_w*l.lights_h << ")\n";
             }
             boost::gil::gray8_image_t image{
-                static_cast<long int>(l.lights_w), 
+                static_cast<long int>(l.lights_w),
                 static_cast<long int>(l.lights_h)
             };
             auto view = boost::gil::view(image);
@@ -438,18 +438,18 @@ private:
                 }
                 else
                 {
-                    std::cout << "failed to set pixel " 
+                    std::cout << "failed to set pixel "
                     << x << " / " << y << "\n";
                 }
             }
             response_.set(http::field::content_type, "image/jpeg");
-            
+
             {
                 std::ofstream o("diodes2.jpeg", std::ios_base::binary );
                 boost::gil::write_view(o, view, boost::gil::jpeg_tag());
             }
-            
-            
+
+
             use_response_file = true;
             http::file_body::value_type body;
             beast::error_code ec;
@@ -511,7 +511,7 @@ private:
         if(use_response_file)
         {
             response_file.content_length(response_file.body().size());
-    
+
             http::async_write(
                 socket_,
                 response_file,
@@ -524,7 +524,7 @@ private:
         else
         {
             response_.content_length(response_.body().size());
-    
+
             http::async_write(
                 socket_,
                 response_,
@@ -575,7 +575,7 @@ void cylindrical_wall_simulation_webserver::task_web()
     tcp::acceptor acceptor{ioc, {address, port}};
     tcp::socket socket{ioc};
     http_server(this, &sim_state, acceptor, socket);
-    
+
     ioc.run();
     while(!stop_thread_web)
     {

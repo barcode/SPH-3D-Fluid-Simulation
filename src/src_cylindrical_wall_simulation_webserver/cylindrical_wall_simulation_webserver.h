@@ -199,7 +199,7 @@ public:
         std::atomic_size_t  setup_num_particles   {2500};
         std::atomic<double> setup_radius_particles{0.03};
         std::atomic<bool>   setup_reset_sim       {false};
-        
+
         std::atomic<bool>   sim_zero_vel          {false};
         std::atomic<bool>   sim_catch_particles   {true};
         std::atomic<double> sim_gravity_x         {0};
@@ -215,7 +215,7 @@ public:
         std::atomic<double> sim_KERNEL_PARTICLES  {20};
         std::atomic<double> sim_WALL_K            {10000};
         std::atomic<double> sim_WALL_DAMPING      {-1};
-    
+
         std::atomic<double> brightness            {10000};
         std::atomic_size_t  num_diodes_height     {100};
         std::atomic_size_t  num_diodes_width      {100};
@@ -242,10 +242,10 @@ public:
     cylindrical_wall_simulation_webserver(const cylindrical_wall_simulation_webserver&)=delete;
     cylindrical_wall_simulation_webserver& operator=(cylindrical_wall_simulation_webserver&&)=delete;
     cylindrical_wall_simulation_webserver& operator=(const cylindrical_wall_simulation_webserver&)=delete;
-    
+
     sim_output::out_lights lights() const;
     std::vector<VEC3D> centers() const;
-    
+
     void wait();
 
 private:

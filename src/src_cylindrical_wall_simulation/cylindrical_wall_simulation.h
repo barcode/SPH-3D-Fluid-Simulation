@@ -25,25 +25,25 @@ struct diode_grid
 
 class cylindrical_wall_simulation
 {
-public:    
+public:
     cylindrical_wall_simulation(
-            double radius_inner, 
-            double radius_outer, 
+            double radius_inner,
+            double radius_outer,
             double height,
             double radius_particle,
             std::size_t particle_count
     );
     void reset(
-                double radius_inner, 
-                double radius_outer, 
+                double radius_inner,
+                double radius_outer,
                 double height,
                 double radius_particle,
                 std::size_t particle_count
         );
-    
+
     void gravity(double x, double y, double z);
-    void step(double dt);    
-    
+    void step(double dt);
+
     void visit_particles(const std::function<void (int, const PARTICLE &)> &callback);
     void visit_particles_mod(const std::function<void (int, PARTICLE &)> &callback);
 
@@ -51,6 +51,6 @@ public:
     double _radius_outer=0.5;
     double _height = 1;
     bool _catch_escaped_particles = false;
-     
+
      std::unique_ptr<PARTICLE_SYSTEM> _particle_system;
 };

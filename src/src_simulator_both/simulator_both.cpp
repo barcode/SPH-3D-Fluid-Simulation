@@ -203,7 +203,7 @@ void idleCallback()
     window->step();
     qapp->processEvents();
     iterationCount++;
-    
+
 
     glutPostRedisplay();
 }
@@ -256,12 +256,12 @@ int main(int argc, char** argv)
 
     glvuVec3f center(0.0, 0.0, 0.0);
     glvu.SetWorldCenter(center);
-    
+
     qapp= std::make_unique<QApplication>(argc, argv);
     window = std::make_unique<qt_sim_window>();
     window->show();
     window->no_autostep=true;
-    
+
     // Let GLUT take over
     glutMainLoop();
 

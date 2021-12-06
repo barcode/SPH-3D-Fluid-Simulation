@@ -1,5 +1,5 @@
 find_package(
-    Qt5 
+    Qt5
     COMPONENTS
         Core
         Gui
@@ -15,10 +15,10 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-add_library(simulator_qt_widget 
+add_library(simulator_qt_widget
     STATIC
-    qt_sim_window.h 
-    qt_sim_window.cpp 
+    qt_sim_window.h
+    qt_sim_window.cpp
     qt_sim_window.ui
 )
 

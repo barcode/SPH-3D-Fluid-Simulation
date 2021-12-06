@@ -36,7 +36,7 @@ class cylindrical_wall_simulation;
 class qt_sim_window : public QMainWindow
 {
     Q_OBJECT
-    
+
 public:
     using clock_t = std::chrono::high_resolution_clock;
     static const clock_t::time_point now()
@@ -49,22 +49,22 @@ public:
         const double ns = std::chrono::duration_cast<std::chrono::nanoseconds>(stop-start).count();
         return ns / 1000 / 1000;
     }
-    
+
     explicit qt_sim_window(QWidget *parent = nullptr);
     ~qt_sim_window();
-    
+
     void timerEvent(QTimerEvent *event) override;
-    
+
     void step();
-    
+
 public slots:
     void reset_sim();
-    
+
 public:
     clock_t::time_point timer_last_End;
-    
+
     Ui::qt_sim_window *ui;
-    
+
     Qt3DExtras::Qt3DWindow* view;
     Qt3DCore::QEntity* scene;
     Qt3DRender::QCamera *camera;
@@ -74,7 +74,7 @@ public:
     std::vector<Qt3DCore::QEntity*> elements;
     std::vector<Qt3DCore::QTransform*> transforms;
     std::unique_ptr<cylindrical_wall_simulation> sim;
-    
+
     diode_grid _diode_grid;
     bool no_autostep = false;
 };

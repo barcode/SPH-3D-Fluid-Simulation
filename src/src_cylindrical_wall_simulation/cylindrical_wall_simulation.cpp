@@ -36,20 +36,20 @@ void diode_grid::add_light(double x, double y, double z)
     const auto angle_norm = angle/M_PI / 2 + 0.5;
     const auto circ_bin_size = 1.0 / static_cast<double>(n_circ);
     const auto circ_bin = static_cast<std::size_t>(angle_norm / circ_bin_size);
-    
+
     const auto h_bin_size = height / static_cast<double>(n_height);
     const auto h_bin = static_cast<std::size_t>(y / h_bin_size);
-    
+
     const auto calc_pos = [&](auto bc, auto bh)
     {
         return std::make_pair(bc*circ_bin_size, bh*h_bin_size);
     };
-    
+
     const auto delta = [](auto a, auto b)
     {
         return a > b ? a-b : b-a;
     };
-    
+
     const auto light = [&](auto bc, auto bh)
     {
         const auto& [pc, ph] = calc_pos(bc, bh);
@@ -61,7 +61,7 @@ void diode_grid::add_light(double x, double y, double z)
     {
         diodes.at(index(bc, bh)) += light(bc,bh);
     };
-        
+
     for(std::size_t offh = 0; offh < 1 + 2*n_radius_h; ++offh )
     {
         if(offh + h_bin < n_radius_h)
@@ -90,8 +90,8 @@ void diode_grid::clear_light()
 
 
 cylindrical_wall_simulation::cylindrical_wall_simulation(
-        double radius_inner, 
-        double radius_outer, 
+        double radius_inner,
+        double radius_outer,
         double height,
         double radius_particle,
         std::size_t particle_count
@@ -101,10 +101,10 @@ cylindrical_wall_simulation::cylindrical_wall_simulation(
     reset(radius_inner, radius_outer, height, radius_particle, particle_count);
 }
 
-    
+
     void cylindrical_wall_simulation::reset(
-                double radius_inner, 
-                double radius_outer, 
+                double radius_inner,
+                double radius_outer,
                 double height,
                 double radius_particle,
                 std::size_t particle_count
@@ -134,7 +134,7 @@ cylindrical_wall_simulation::cylindrical_wall_simulation(
         scenario_flask_wall.boxSize.x = 2*radius_outer;
         scenario_flask_wall.boxSize.y = height;
         scenario_flask_wall.boxSize.z = 2*radius_outer;
-        
+
         // bottom
         scenario_flask_wall.collision.walls.emplace_back(
             VEC3D(0, 1, 0),
@@ -155,7 +155,7 @@ cylindrical_wall_simulation::cylindrical_wall_simulation(
             VEC3D(0, 1, 0), // up
             radius_inner,   // r
             false);         //contain
-        
+
         for(;particle_count;--particle_count)
         {
             scenario_flask_wall.particles.initial.push_back(

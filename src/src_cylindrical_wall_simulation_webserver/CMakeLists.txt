@@ -4,7 +4,7 @@ find_package(
         system
         filesystem
     REQUIRED)
-find_package (Threads) 
+find_package (Threads)
 
 
 
@@ -22,9 +22,9 @@ target_include_directories(cylindrical_wall_simulation_webserver PUBLIC
     $<INSTALL_INTERFACE:${INSTALL_DIRECTORY_HEADERS}>
 )
 
-target_link_libraries(cylindrical_wall_simulation_webserver 
+target_link_libraries(cylindrical_wall_simulation_webserver
     PUBLIC
-    
+
     Boost::headers
     Boost::system
     Boost::filesystem

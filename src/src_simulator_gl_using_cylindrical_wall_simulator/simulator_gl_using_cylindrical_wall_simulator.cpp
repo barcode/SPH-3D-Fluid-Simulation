@@ -155,14 +155,14 @@ void keyboardCallback(unsigned char key, int x, int y)
             std::cout << "surface threshold: " << sim->_particle_system->SURFACE_THRESHOLD << std::endl;
             break;
 
-            
+
     case 'c':
         sim->_catch_escaped_particles = !sim->_catch_escaped_particles;
         std::cout << "catch escaped particles " << sim->_catch_escaped_particles << "\n";
         break;
-            
-            
-            
+
+
+
         case 's':
             sim->_particle_system->toggleSurfaceVisible();
             break;
