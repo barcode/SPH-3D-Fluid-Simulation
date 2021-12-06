@@ -16,6 +16,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_subdirectory(src/src_glvu)
 add_subdirectory(src/src_particle_simulation)
 add_subdirectory(src/src_cylindrical_wall_simulation)
+add_subdirectory(src/src_cylindrical_wall_simulation_webserver)
+
 add_subdirectory(src/src_simulator_qt_widget)
 add_subdirectory(src/src_simulator_gl)
 add_subdirectory(src/src_simulator_gl_using_cylindrical_wall_simulator)

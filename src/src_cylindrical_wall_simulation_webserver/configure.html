@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<meta charset="utf-8" />
+<html>
+    <head>
+        <!-- head definitions go here -->
+    </head>
+    <style>
+    img.sticky {
+      position: -webkit-sticky;
+      position: sticky;
+      top: 0;
+      float: right;
+      border: 5px solid #0f0;
+      width: 400px;
+    }
+    </style>
+    <body>
+    <script>
+        var updating = false;
+        function refresh_diodes_image()
+        {    
+            // create a new timestamp 
+            var timestamp = new Date().getTime();
+            var el = document.getElementById("img_diodes");
+            var queryString = "?val=" + timestamp;
+            el.src = "/diodes" + queryString;
+        }
+        var intervalId = setInterval(function() { refresh_diodes_image() }, 500);
+        function update_params()
+        {
+            updating = true;
+            var xmlHttp = new XMLHttpRequest();
+
+            xmlHttp.onreadystatechange=function()
+            {
+                try {
+                    console.log("state =", xmlHttp.readyState);
+                    if(xmlHttp.readyState != 4)
+                    {
+                        return;
+                    }
+                    console.log("updating params in input fields");
+                    
+                    var json_str = xmlHttp.responseText;
+                    console.log("json =", json_str);
+                    var json = JSON.parse(json_str);
+                    for (var key in json)
+                    {
+                        try {   
+                            console.log("set =", key, " -> ", json[key]);
+                            var input = document.getElementById(key);
+                            input.value = json[key];
+                        }
+                        catch(err) {}
+                    }
+                }
+                catch(err) {}
+                updating = false;
+            }
+
+            xmlHttp.open( "GET", "/params", true ); // false for synchronous request
+            xmlHttp.send( null );
+        }
+    
+        function setparam(name, value)
+        {
+            if(updating)
+            {
+                return;
+            }
+            console.log(name, value);
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.onreadystatechange=function()
+            {
+                console.log("respone = ", xmlHttp.responseText);
+            }
+            xmlHttp.open( "GET", "/" + name + "?val=" + value, true ); // false for synchronous request
+            xmlHttp.send( null );
+            update_params();
+        }
+        console.log("initial update...");
+        update_params();
+        console.log("initial update...done!");
+    </script>
+
+    <img id="img_diodes" src="/diodes" class="sticky" alt="diodes">
+    <table>
+        <tr> <td>nsec since epoch for last param update </td> <td><input type='text' id='time' /></td> </tr>
+    </table>
+    
+
+        <h2>Scenario setup</h2>
+        <table>
+            <tr> <td>radius inner     </td> <td><input type="number" step="0.01" value="1" min="0.01" max="1"    id="sup_ri" onchange="setparam('sup_ri', this.value)"/></td> </tr>
+            <tr> <td>radius outer     </td> <td><input type="number" step="0.01" value="1" min="0.01" max="1"    id="sup_ro" onchange="setparam('sup_ro', this.value)"/></td> </tr>
+            <tr> <td>height           </td> <td><input type="number" step="0.01" value="1" min="0.1"  max="3"    id="sup_h"  onchange="setparam('sup_h' , this.value)"/></td> </tr>
+            <tr> <td>num particles    </td> <td><input type="number" step="1"    value="1" min="0"    max="5000" id="sup_np" onchange="setparam('sup_np', this.value)"/></td> </tr>
+            <tr> <td>radius particles </td> <td><input type="number" step="0.01" value="1" min="0.01" max="0.3"  id="sup_rp" onchange="setparam('sup_rp', this.value)"/></td> </tr>
+        </table>
+        <button onclick="setparam('sup_reset', 1)">reinitialize</button>        
+        <hr>
+        <h2>Parameters simulation (can be changed while running)</h2>
+        <table>
+            <tr> <td>catch particles  </td> <td><input type="checkbox"                                              id="sim_cat" onchange="setparam('sim_cat', this.checked)"/></td> </tr>
+            <tr> <td>gravity x        </td> <td><input type="number" step="0.01" value="1" min="-1000"  max="1000"  id="sim_gx"  onchange="setparam('sim_gx' , this.value)"/></td> </tr>
+            <tr> <td>gravity y        </td> <td><input type="number" step="0.01" value="1" min="-1000"  max="1000"  id="sim_gy"  onchange="setparam('sim_gy' , this.value)"/></td> </tr>
+            <tr> <td>gravity z        </td> <td><input type="number" step="0.01" value="1" min="-1000"  max="1000"  id="sim_gz"  onchange="setparam('sim_gz' , this.value)"/></td> </tr>
+            <tr> <td>dt per step      </td> <td><input type="number" step="0.01" value="1" min="0"      max="10"    id="sim_dt"  onchange="setparam('sim_dt' , this.value)"/></td> </tr>
+            <tr> <td>GAS_STIFFNESS    </td> <td><input type="number" step="0.01" value="1" min="-10000" max="10000" id="sim_gs"  onchange="setparam('sim_gs' , this.value)"/></td> </tr>
+            <tr> <td>REST_DENSITY     </td> <td><input type="number" step="0.01" value="1" min="-10000" max="10000" id="sim_rd"  onchange="setparam('sim_rd' , this.value)"/></td> </tr>
+            <tr> <td>PARTICLE_MASS    </td> <td><input type="number" step="0.01" value="1" min="-10000" max="10000" id="sim_pm"  onchange="setparam('sim_pm' , this.value)"/></td> </tr>
+            <tr> <td>VISCOSITY        </td> <td><input type="number" step="0.01" value="1" min="-10000" max="10000" id="sim_vs"  onchange="setparam('sim_vs' , this.value)"/></td> </tr>
+            <tr> <td>SURFACE_THRESHOLD</td> <td><input type="number" step="0.01" value="1" min="-10000" max="10000" id="sim_str" onchange="setparam('sim_str', this.value)"/></td> </tr>
+            <tr> <td>SURFACE_TENSION  </td> <td><input type="number" step="0.01" value="1" min="-10000" max="10000" id="sim_ste" onchange="setparam('sim_ste', this.value)"/></td> </tr>
+            <tr> <td>KERNEL_PARTICLES </td> <td><input type="number" step="0.01" value="1" min="-10000" max="10000" id="sim_kp"  onchange="setparam('sim_kp' , this.value)"/></td> </tr>
+            <tr> <td>WALL_K           </td> <td><input type="number" step="0.01" value="1" min="-10000" max="10000" id="sim_wk"  onchange="setparam('sim_wk' , this.value)"/></td> </tr>
+            <tr> <td>WALL_DAMPING     </td> <td><input type="number" step="0.01" value="1" min="-10000" max="10000" id="sim_wd"  onchange="setparam('sim_wd' , this.value)"/></td> </tr>
+        </table>
+        <button onclick="setparam('sim_zero_vel', 1)">set zero vel</button>    
+        <hr>
+        <h2>Parameters diodes (can be changed while running)</h2>
+        <table>
+            <tr> <td>brightness         </td> <td><input type="number" step="0.01" value="1" min="0" max="10000" id="d_d"   onchange="setparam('d_d' , this.value)"/></td> </tr>
+            <tr> <td>num diodes height  </td> <td><input type="number" step="1"    value="1" min="1" max="1000"  id="d_nh"  onchange="setparam('d_nh', this.value)"/></td> </tr>
+            <tr> <td>num diodes width   </td> <td><input type="number" step="1"    value="1" min="1" max="1000"  id="d_nw"  onchange="setparam('d_nw', this.value)"/></td> </tr>
+            <tr> <td>light radius height</td> <td><input type="number" step="0.01" value="1" min="0" max="100"   id="d_rh"  onchange="setparam('d_rh', this.value)"/></td> </tr>
+            <tr> <td>light radius width </td> <td><input type="number" step="0.01" value="1" min="0" max="100"   id="d_rw"  onchange="setparam('d_rw', this.value)"/></td> </tr>
+            <tr> <td>brightness to pixel</td> <td><input type="number" step="1"    value="1" min="0" max="10000" id="d_b2p" onchange="setparam('d_b2p', this.value)"/></td> </tr>
+        </table>
+    </body>
+</html>
