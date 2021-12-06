@@ -44,7 +44,8 @@ public:
     void gravity(double x, double y, double z);
     void step(double dt);    
     
-    void visit_particles(const std::function<void (int, const PARTICLE &)> &callback);    
+    void visit_particles(const std::function<void (int, const PARTICLE &)> &callback);
+    void visit_particles_mod(const std::function<void (int, PARTICLE &)> &callback);
 
     double _radius_inner=0.3;
     double _radius_outer=0.5;

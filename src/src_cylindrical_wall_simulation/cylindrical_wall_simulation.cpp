@@ -207,18 +207,32 @@ void cylindrical_wall_simulation::step(
 
 void cylindrical_wall_simulation::visit_particles(const std::function<void (int, const PARTICLE &)> &callback)
 {
-    if(callback)
+    if(!callback)
     {
-        const auto& grid = *(_particle_system->grid);
-        for (int gridCellIndex = 0; gridCellIndex < grid.cellCount(); gridCellIndex++)
+        return;
+    }
+    const auto& grid = *(_particle_system->grid);
+    for (int gridCellIndex = 0; gridCellIndex < grid.cellCount(); gridCellIndex++)
+    {
+        for (const auto& p : grid.data().at(gridCellIndex))
         {
-            for (const auto& p : grid.data().at(gridCellIndex))
-            {
-                if(callback)
-                {
-                    callback(p.id(), p);
-                }
-            }
+            callback(p.id(), p);
+        }
+    }
+}
+
+void cylindrical_wall_simulation::visit_particles_mod(const std::function<void (int, PARTICLE &)> &callback)
+{
+    if(!callback)
+    {
+        return;
+    }
+    auto& grid = *(_particle_system->grid);
+    for (int gridCellIndex = 0; gridCellIndex < grid.cellCount(); gridCellIndex++)
+    {
+        for (auto& p : grid.data().at(gridCellIndex))
+        {
+            callback(p.id(), p);
         }
     }
 }
