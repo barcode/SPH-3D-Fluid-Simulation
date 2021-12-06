@@ -23,3 +23,5 @@ add_subdirectory(src/src_simulator_gl)
 add_subdirectory(src/src_simulator_gl_using_cylindrical_wall_simulator)
 add_subdirectory(src/src_simulator_qt)
 add_subdirectory(src/src_simulator_both)
+add_subdirectory(src/src_simulator_webserver)
+
