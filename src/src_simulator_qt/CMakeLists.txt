@@ -1,2 +1,5 @@
 add_executable(simulator_qt qt_sim.cpp)
 target_link_libraries(simulator_qt simulator_qt_widget)
+if(NOT TARGET simulator_qt_widget)
+    set_target_properties(simulator_qt PROPERTIES EXCLUDE_FROM_ALL ON)
+endif()
