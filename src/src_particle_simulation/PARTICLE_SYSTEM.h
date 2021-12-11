@@ -40,9 +40,10 @@ public:
     ~PARTICLE_SYSTEM();
 
     void updateGrid();
-
+#ifndef NO_OPENGL
     // draw to OGL
     void draw();
+#endif
 
     void addParticle(const VEC3D& position);
 

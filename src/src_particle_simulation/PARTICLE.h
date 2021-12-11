@@ -1,11 +1,13 @@
 #pragma once
 
+#ifndef NO_OPENGL
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
 #include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
+#endif
 #endif
 
 #include "VEC3.h"
@@ -26,10 +28,10 @@ public:
     PARTICLE(const VEC3D& position);
     PARTICLE(const VEC3D& position, const VEC3D& velocity);
     //~PARTICLE();
-
+#ifndef NO_OPENGL
     // draw to OGL
     void draw();
-
+#endif
     // clear all previous accumulated forces
 
     // accumulate forces
@@ -86,5 +88,7 @@ private:
     double _pressure;
     bool _flag;
     int _id = 0;
+#ifndef NO_OPENGL
     GLUquadricObj* myQuadric = nullptr;
+#endif
 };

@@ -1,2 +1,5 @@
 add_executable(simulator_both simulator_both.cpp)
 target_link_libraries(simulator_both simulator_qt_widget)
+if(NOT TARGET glvu)
+    set_target_properties(simulator_both PROPERTIES EXCLUDE_FROM_ALL ON)
+endif()

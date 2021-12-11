@@ -1,2 +1,5 @@
 add_executable(simulator_gl HW1.cpp)
 target_link_libraries(simulator_gl particle_simulation)
+if(NOT TARGET glvu)
+    set_target_properties(simulator_gl PROPERTIES EXCLUDE_FROM_ALL ON)
+endif()

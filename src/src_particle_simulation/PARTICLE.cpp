@@ -35,6 +35,7 @@ PARTICLE::PARTICLE(const VEC3D& position, const VEC3D& velocity) :
 ///////////////////////////////////////////////////////////////////////////////
 // OGL drawing
 ///////////////////////////////////////////////////////////////////////////////
+#ifndef NO_OPENGL
 void PARTICLE::draw()
 {
     if (_flag && isSurfaceVisible)
@@ -84,7 +85,7 @@ void PARTICLE::draw()
 
     glPopMatrix();
 }
-
+#endif
 void PARTICLE::clearParameters()
 {
     _position = VEC3D();
